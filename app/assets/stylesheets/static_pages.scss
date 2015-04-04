@@ -1,0 +1,37 @@
+// Place all the styles related to the StaticPages controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.glyphicon {
+  padding: .3em;
+  font-size: 3.2em;
+  line-height: .7em;
+/*   border: 1px solid black; */
+}
+.box {
+  height: 5.1em;
+  width: 5.1em;
+
+}
+
+.chess-holder {
+  width: 70%;
+}
+.odd {
+  background: #FFFF99;
+}
+.even {
+  background: #003300;
+}
+.glyphicon-none:before {
+    content: "\2122";
+    color: transparent !important;
+}
+.white {
+  color: white;
+  text-shadow: 2px 2px 2px #555;
+}
+.black {
+  color: black;
+  text-shadow: 2px 2px 2px #777;
+}
