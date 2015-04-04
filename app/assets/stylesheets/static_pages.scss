@@ -6,12 +6,13 @@
   padding: .3em;
   font-size: 3.2em;
   line-height: .7em;
-/*   border: 1px solid black; */
+}
+.draggable {
+  z-index: 20;
 }
 .box {
   height: 5.1em;
   width: 5.1em;
-
 }
 
 .chess-holder {
