@@ -1,28 +1,19 @@
-== README
+== Chess App
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a simple chess application using bootstrap glyphicons.
 
-Things you may want to cover:
+Things to improve:
 
-* Ruby version
+*Set up droppable class to click elements to place
 
-* System dependencies
+*Set up allowable moves for each type of piece
 
-* Configuration
+*Use JavaScript to move class names of glyphicons
 
-* Database creation
+*Collect position data in database
 
-* Database initialization
+*Use Pusher API to push changes for 2 players simultaneously
 
-* How to run the test suite
+*Add stylized timer that changes with player moves
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+*Add interface for users to choose opponents / timing of play
