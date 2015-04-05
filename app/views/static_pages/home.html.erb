@@ -175,14 +175,32 @@ $(function(){
 
       }
 
-      else if (pieceType.match(/glyphicon-king white/)) {
+      else if (pieceType.match(/glyphicon-king/)) {
         $('.droppable').droppable("disable");
         $(this).parent().droppable('enable');
+        var letterVar = startingPoint[4];
+        var numberVar = startingPoint[5];
+        // set +x+y diagonal //
+        var letterVar = startingPoint[4];
+        var yAxis = parseInt(startingPoint[5]);
+        var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
+        var xAxis = letterArray.indexOf(letterVar) + 1;
+        var divArray = [];
+        console.log(xAxis);
+        console.log(yAxis);
+        divArray.push(letterArray[xAxis -1] + (yAxis + 1));
+        divArray.push(letterArray[xAxis -1] + (yAxis - 1));
+        divArray.push(letterArray[xAxis -2] + (yAxis));
+        divArray.push(letterArray[xAxis] + (yAxis));
+        divArray.push(letterArray[xAxis -2] + (yAxis + 1));
+        divArray.push(letterArray[xAxis -2] + (yAxis - 1));
+        divArray.push(letterArray[xAxis] + (yAxis + 1));
+        divArray.push(letterArray[xAxis] + (yAxis - 1));
+
+        divArray.forEach(enableElements);
+        console.log(divArray);
       }
-      else if (pieceType.match(/glyphicon-king black/)) {
-        $('.droppable').droppable("disable");
-        $(this).parent().droppable('enable');
-      }
+
     }
   });
 
