@@ -201,6 +201,14 @@ $(function(){
         console.log(divArray);
       }
 
+      if (pieceType.match(/white/) !== null) {
+        $('.white').parent().droppable("disable");
+      }
+      else if (pieceType.match(/black/) !== null) {
+        $('.black').parent().droppable("disable");
+      }
+
+
     }
   });
 
@@ -211,8 +219,18 @@ $(function(){
     revert: "invalid",
     drop: function(event, ui) {
       var newBox = $(this).attr('id');
+      var stationBox = $(this);
       var piece = ui.draggable.attr('class');
       var oldBox = ui.draggable.parent().attr('id');
+      var classCheck = stationBox.children().attr('class');
+
+      if (stationBox.children().length > 0 && piece.match(/white/) !== null) {
+        stationBox.children().detach().appendTo('.black-pieces');
+      }
+      else if (stationBox.children().length > 0 && piece.match(/black/) !== null) {
+        stationBox.children().detach().appendTo('.white-pieces');
+      }
+
 
       ui.draggable.detach().appendTo($(this)).css({'top': '0', 'left': '0'});
 
