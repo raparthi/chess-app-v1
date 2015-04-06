@@ -33,12 +33,176 @@ $(function(){
         $(this).parent().prev().droppable('enable');
       }
       // set vertical and horizontal movement for rooks //
-      else if (pieceType.match(/glyphicon-tower/)) {
+      else if (pieceType.match(/glyphicon-tower black/)) {
         $('.droppable').droppable("disable");
         var letterVar = startingPoint[4];
         var numberVar = startingPoint[5];
-        $('.chess-holder').children('div[class*=col]').children('div[id*='+ letterVar +']').droppable('enable');
-        $('.chess-holder').children('div[class*=col]').children('div[id*='+ numberVar +']').droppable('enable');
+        $('.droppable').droppable("disable");
+
+        // set +y vertical for black rook //
+
+         var yAxis = parseInt(startingPoint[5]);
+         var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
+         var xAxis = letterArray.indexOf(letterVar) + 1;
+         var divArray = [];
+         while (yAxis <= 8 ) {
+           divArray.push(letterArray[xAxis -1] + yAxis);
+
+           //check for this white piece, then for next black piece //
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+
+           yAxis += 1;
+
+           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+         }
+         // set -y vertical for black rook //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+
+         while (yAxis >= 1 ) {
+           divArray.push(letterArray[xAxis -1] + yAxis);
+
+           //check for this white piece, then for next black piece //
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+
+           yAxis -= 1;
+
+           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+         }
+
+         // set + x horizontal for black rook //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+
+         while (xAxis <= 8 ) {
+           divArray.push(letterArray[xAxis -1] + yAxis);
+
+           //check for this white piece, then for next black piece //
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+
+           xAxis += 1;
+
+           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+         }
+
+         // set - x horizontal for black rook //
+         while (xAxis >= 1 ) {
+           divArray.push(letterArray[xAxis -1] + yAxis);
+
+           //check for this white piece, then for next black piece //
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+
+           xAxis -= 1;
+
+           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+         }
+         console.log(divArray);
+         divArray.forEach(enableElements);
+         function enableElements(entry) {
+           $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
+         }
+
+      }
+      else if (pieceType.match(/glyphicon-tower white/)) {
+        $('.droppable').droppable("disable");
+        var letterVar = startingPoint[4];
+        var numberVar = startingPoint[5];
+        $('.droppable').droppable("disable");
+
+        // set +y vertical for black rook //
+
+         var yAxis = parseInt(startingPoint[5]);
+         var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
+         var xAxis = letterArray.indexOf(letterVar) + 1;
+         var divArray = [];
+         while (yAxis <= 8 ) {
+           divArray.push(letterArray[xAxis -1] + yAxis);
+
+           //check for this white piece, then for next black piece //
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+
+           yAxis += 1;
+
+           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+         }
+         // set -y vertical for black rook //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+
+         while (yAxis >= 1 ) {
+           divArray.push(letterArray[xAxis -1] + yAxis);
+
+           //check for this white piece, then for next black piece //
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+
+           yAxis -= 1;
+
+           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+         }
+
+         // set + x horizontal for black rook //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+
+         while (xAxis <= 8 ) {
+           divArray.push(letterArray[xAxis -1] + yAxis);
+
+           //check for this white piece, then for next black piece //
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+
+           xAxis += 1;
+
+           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+         }
+
+         // set - x horizontal for black rook //
+         while (xAxis >= 1 ) {
+           divArray.push(letterArray[xAxis -1] + yAxis);
+
+           //check for this white piece, then for next black piece //
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+
+           xAxis -= 1;
+
+           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+         }
+         console.log(divArray);
+         divArray.forEach(enableElements);
+         function enableElements(entry) {
+           $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
+         }
 
       }
 
@@ -66,16 +230,16 @@ $(function(){
            }
 
            xAxis += 1;
-           yAxis += 1;
+
            if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
              break;
            }
 
          }
          divArray.forEach(enableElements);
-         function enableElements(entry) {
-           $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
-         }
+        //  function enableElements(entry) {
+        //    $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
+        //  }
          // set -x-y diagonal //
          xAxis = letterArray.indexOf(letterVar) + 1;
          yAxis = parseInt(startingPoint[5]);
@@ -150,8 +314,6 @@ $(function(){
          var xAxis = letterArray.indexOf(letterVar) + 1;
          var divArray = [];
          while (xAxis <= 8 && yAxis <= 8 ) {
-
-
 
            divArray.push(letterArray[xAxis -1] + yAxis);
 
