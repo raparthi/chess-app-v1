@@ -7,12 +7,11 @@ $(function(){
   $('.draggable').draggable({
     snap: ".droppable",
     snapTolerance: 10,
+    // revert pieces to original position if not valid move //
     stop: function(event, ui) {
       var piece = $(this);
       var pieceStyle = $(this).css('top');
       if (pieceStyle !== '0px') {
-        console.log(piece.css('top'));
-        console.log(piece.css('left'));
         piece.animate({
           top: 0,
           left: 0,
@@ -26,29 +25,26 @@ $(function(){
       // set forward movement for pawns //
       if (pieceType.match(/glyphicon-pawn black/)) {
         $('.droppable').droppable("disable");
-        $(this).parent().droppable('enable');
         $(this).parent().next().droppable('enable');
       }
       else if (pieceType.match(/glyphicon-pawn white/)) {
         $('.droppable').droppable("disable");
-        $(this).parent().droppable('enable');
         $(this).parent().prev().droppable('enable');
       }
       // set vertical and horizontal movement for rooks //
       else if (pieceType.match(/glyphicon-tower/)) {
         $('.droppable').droppable("disable");
-        $(this).parent().droppable('enable');
         var letterVar = startingPoint[4];
         var numberVar = startingPoint[5];
         $('.chess-holder').children('div[class*=col]').children('div[id*='+ letterVar +']').droppable('enable');
         $('.chess-holder').children('div[class*=col]').children('div[id*='+ numberVar +']').droppable('enable');
+        
       }
 
       // set diagonal movement for bishops //
 
       else if (pieceType.match(/glyphicon-bishop/)) {
         $('.droppable').droppable("disable");
-        $(this).parent().droppable('enable');
 
         // set +x+y diagonal //
         var letterVar = startingPoint[4];
@@ -102,7 +98,6 @@ $(function(){
 
       else if (pieceType.match(/glyphicon-knight/)) {
         $('.droppable').droppable("disable");
-        $(this).parent().droppable('enable');
         var letterVar = startingPoint[4];
         var yAxis = parseInt(startingPoint[5]);
         var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -125,7 +120,6 @@ $(function(){
 
       else if (pieceType.match(/glyphicon-queen/)) {
         $('.droppable').droppable("disable");
-        $(this).parent().droppable('enable');
         var letterVar = startingPoint[4];
         var numberVar = startingPoint[5];
         $('.chess-holder').children('div[class*=col]').children('div[id*='+ letterVar +']').droppable('enable');
@@ -177,7 +171,6 @@ $(function(){
 
       else if (pieceType.match(/glyphicon-king/)) {
         $('.droppable').droppable("disable");
-        $(this).parent().droppable('enable');
         var letterVar = startingPoint[4];
         var numberVar = startingPoint[5];
         // set +x+y diagonal //
