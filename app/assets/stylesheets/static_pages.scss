@@ -35,7 +35,7 @@
     color: transparent !important;
 }
 .white {
-  color: white;
+  color: #fefefe;
   text-shadow: 2px 2px 2px #555;
 }
 .black {
@@ -77,5 +77,16 @@
     margin-left: 20px;
     width: 109%;
   }
-
+}
+.border-left {
+  border-left: 1px solid black;
+}
+.border-top {
+  border-top: 1px solid black;
+}
+.border-bottom {
+  border-bottom: 1px solid black;
+}
+.border-right {
+  border-right: 1px solid black;
 }
