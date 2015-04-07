@@ -200,9 +200,9 @@ $(function(){
          }
          console.log(divArray);
          divArray.forEach(enableElements);
-         function enableElements(entry) {
-           $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
-         }
+        //  function enableElements(entry) {
+        //    $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
+        //  }
 
       }
 
@@ -219,8 +219,6 @@ $(function(){
          var divArray = [];
          while (xAxis <= 8 && yAxis <= 8 ) {
 
-
-
            divArray.push(letterArray[xAxis -1] + yAxis);
 
            //check for this white piece, then for next black piece //
@@ -230,7 +228,8 @@ $(function(){
            }
 
            xAxis += 1;
-
+           yAxis += 1;
+           
            if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
              break;
            }
@@ -240,6 +239,8 @@ $(function(){
         //  function enableElements(entry) {
         //    $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
         //  }
+         // set -x-y diagonal //
+
          // set -x-y diagonal //
          xAxis = letterArray.indexOf(letterVar) + 1;
          yAxis = parseInt(startingPoint[5]);
@@ -302,7 +303,7 @@ $(function(){
          divArray.forEach(enableElements);
          console.log(divArray);
        }
-      // set diagonal movement for bishops //
+      // set diagonal movement for white bishop //
 
       else if (pieceType.match(/glyphicon-bishop white/)) {
         $('.droppable').droppable("disable");
@@ -318,7 +319,6 @@ $(function(){
            divArray.push(letterArray[xAxis -1] + yAxis);
 
            //check for this white piece, then for next black piece //
-           var lastElement = divArray[divArray.length -1];
            if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
              break;
            }
@@ -331,9 +331,9 @@ $(function(){
 
          }
          divArray.forEach(enableElements);
-         function enableElements(entry) {
-           $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
-         }
+        //  function enableElements(entry) {
+        //    $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
+        //  }
          // set -x-y diagonal //
          xAxis = letterArray.indexOf(letterVar) + 1;
          yAxis = parseInt(startingPoint[5]);
@@ -419,56 +419,378 @@ $(function(){
         divArray.forEach(enableElements);
       }
 
-      // set movements for queen //
+      // set movements for white queen //
 
-      else if (pieceType.match(/glyphicon-queen/)) {
+      else if (pieceType.match(/glyphicon-queen white/)) {
         $('.droppable').droppable("disable");
-        var letterVar = startingPoint[4];
-        var numberVar = startingPoint[5];
-        $('.chess-holder').children('div[class*=col]').children('div[id*='+ letterVar +']').droppable('enable');
-        $('.chess-holder').children('div[class*=col]').children('div[id*='+ numberVar +']').droppable('enable');
+
         // set +x+y diagonal //
-        var letterVar = startingPoint[4];
-        var yAxis = parseInt(startingPoint[5]);
-        var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
-        var xAxis = letterArray.indexOf(letterVar) + 1;
-        var divArray = [];
-        while (xAxis <= 8 && yAxis <= 8) {
-          divArray.push(letterArray[xAxis -1] + yAxis);
-          xAxis += 1;
-          yAxis += 1;
-        }
-        divArray.forEach(enableElements);
-        // set -x-y diagonal //
-        xAxis = letterArray.indexOf(letterVar) + 1;
-        yAxis = parseInt(startingPoint[5]);
-        while (xAxis >= 1 && yAxis >= 1 ) {
-          divArray.push(letterArray[xAxis - 1] + yAxis);
-          xAxis -= 1;
-          yAxis -= 1;
-        }
-        divArray.forEach(enableElements);
+         var letterVar = startingPoint[4];
+         var yAxis = parseInt(startingPoint[5]);
+         var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
+         var xAxis = letterArray.indexOf(letterVar) + 1;
+         var divArray = [];
+         while (xAxis <= 8 && yAxis <= 8 ) {
 
-        // set +x-y diagonal //
-        xAxis = letterArray.indexOf(letterVar) + 1;
-        yAxis = parseInt(startingPoint[5]);
-        while (xAxis <= 8 && yAxis >= 1 ) {
-          divArray.push(letterArray[xAxis - 1] + yAxis);
-          xAxis += 1;
-          yAxis -= 1;
-        }
-        divArray.forEach(enableElements);
+           divArray.push(letterArray[xAxis -1] + yAxis);
 
-        // set -x+y diagonal //
-        xAxis = letterArray.indexOf(letterVar) + 1;
-        yAxis = parseInt(startingPoint[5]);
-        while (xAxis >= 1 && yAxis <= 8) {
-          divArray.push(letterArray[xAxis - 1] + yAxis);
-          xAxis -= 1;
-          yAxis += 1;
-        }
-        divArray.forEach(enableElements);
-        console.log(divArray);
+           //check for this white piece, then for next black piece //
+           var lastElement = divArray[divArray.length -1];
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+
+           xAxis += 1;
+           yAxis += 1;
+           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+
+         }
+         divArray.forEach(enableElements);
+        //  function enableElements(entry) {
+        //    $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
+        //  }
+         // set -x-y diagonal //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+         while (xAxis >= 1 && yAxis >= 1 ) {
+
+           var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis -1] + yAxis + ']');
+           if (tempPosition.children('span[id*=black]').length !== 0) {
+             break;
+           }
+
+           divArray.push(letterArray[xAxis - 1] + yAxis);
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+           xAxis -= 1;
+           yAxis -= 1;
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+         }
+         divArray.forEach(enableElements);
+         // set +x-y diagonal //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+         while (xAxis <= 8 && yAxis >= 1 ) {
+           var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
+           if (tempPosition.children('span[id*=black]').length !== 0) {
+             break;
+           }
+
+           divArray.push(letterArray[xAxis - 1] + yAxis);
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+           xAxis += 1;
+           yAxis -= 1;
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+         }
+         divArray.forEach(enableElements);
+         // set -x+y diagonal //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+         while (xAxis >= 1 && yAxis <= 8) {
+
+          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
+
+
+           divArray.push(letterArray[xAxis - 1] + yAxis);
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+           xAxis -= 1;
+           yAxis += 1;
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+         }
+         divArray.forEach(enableElements);
+         console.log(divArray);
+
+         // set y+ vertical for white queen //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+         while (yAxis <= 8) {
+
+          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
+
+
+           divArray.push(letterArray[xAxis - 1] + yAxis);
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+
+           yAxis += 1;
+
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+         }
+         divArray.forEach(enableElements);
+         console.log(divArray);
+
+         // set y- vertical for white queen //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+         while (yAxis >= 1) {
+
+          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
+
+
+           divArray.push(letterArray[xAxis - 1] + yAxis);
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+
+           yAxis -= 1;
+
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+         }
+         divArray.forEach(enableElements);
+         console.log(divArray);
+
+         // set x+ horizontal for white queen  //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+         while (xAxis <= 8 ) {
+
+          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
+
+
+           divArray.push(letterArray[xAxis - 1] + yAxis);
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+
+           xAxis += 1;
+
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+         }
+         divArray.forEach(enableElements);
+         console.log(divArray);
+
+         // set x- horizontal for white Queen //
+
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+         while (xAxis >= 1 ) {
+
+          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
+
+
+           divArray.push(letterArray[xAxis - 1] + yAxis);
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+
+           xAxis -= 1;
+
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+         }
+         divArray.forEach(enableElements);
+         console.log(divArray);
+      }
+
+      // set movements for black queen //
+      else if (pieceType.match(/glyphicon-queen black/)) {
+        $('.droppable').droppable("disable");
+
+        // set +x+y diagonal //
+         var letterVar = startingPoint[4];
+         var yAxis = parseInt(startingPoint[5]);
+         var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
+         var xAxis = letterArray.indexOf(letterVar) + 1;
+         var divArray = [];
+         while (xAxis <= 8 && yAxis <= 8 ) {
+
+
+
+           divArray.push(letterArray[xAxis -1] + yAxis);
+
+           //check for this white piece, then for next black piece //
+           var lastElement = divArray[divArray.length -1];
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+
+           xAxis += 1;
+           yAxis += 1
+
+           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+
+         }
+         divArray.forEach(enableElements);
+        //  function enableElements(entry) {
+        //    $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
+        //  }
+         // set -x-y diagonal //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+         while (xAxis >= 1 && yAxis >= 1 ) {
+
+           var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis -1] + yAxis + ']');
+           if (tempPosition.children('span[id*=white]').length !== 0) {
+             break;
+           }
+
+           divArray.push(letterArray[xAxis - 1] + yAxis);
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+           xAxis -= 1;
+           yAxis -= 1;
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+         }
+         divArray.forEach(enableElements);
+         // set +x-y diagonal //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+         while (xAxis <= 8 && yAxis >= 1 ) {
+           var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
+           if (tempPosition.children('span[id*=white]').length !== 0) {
+             break;
+           }
+
+           divArray.push(letterArray[xAxis - 1] + yAxis);
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+           xAxis += 1;
+           yAxis -= 1;
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+         }
+         divArray.forEach(enableElements);
+         // set -x+y diagonal //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+         while (xAxis >= 1 && yAxis <= 8) {
+
+          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
+
+
+           divArray.push(letterArray[xAxis - 1] + yAxis);
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+           xAxis -= 1;
+           yAxis += 1;
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+         }
+
+         divArray.forEach(enableElements);
+         console.log(divArray);
+
+
+         // set x+ horizontal //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+         while (xAxis <= 8) {
+
+          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
+
+
+           divArray.push(letterArray[xAxis - 1] + yAxis);
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+           xAxis += 1;
+
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+         }
+
+         divArray.forEach(enableElements);
+         console.log(divArray);
+
+
+         // set x- horizontal for Queen //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+         while (xAxis >= 1 ) {
+
+          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
+
+
+           divArray.push(letterArray[xAxis - 1] + yAxis);
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+           xAxis -= 1;
+
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+         }
+
+         divArray.forEach(enableElements);
+         console.log(divArray);
+
+         // set y+ vertical for Queen //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+         while ( yAxis <= 8) {
+
+          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
+
+
+           divArray.push(letterArray[xAxis - 1] + yAxis);
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+
+           yAxis += 1;
+
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+         }
+
+         divArray.forEach(enableElements);
+         console.log(divArray);
+
+         // set y- vertical for Queen //
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         yAxis = parseInt(startingPoint[5]);
+         while ( yAxis >= 1) {
+
+          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
+
+
+           divArray.push(letterArray[xAxis - 1] + yAxis);
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
+             break;
+           }
+
+           yAxis -= 1;
+
+           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
+             break;
+           }
+         }
+
+         divArray.forEach(enableElements);
+         console.log(divArray);
 
       }
 
