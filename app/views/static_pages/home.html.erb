@@ -19,6 +19,7 @@ $(function(){
       }
     },
     start: function(event, ui) {
+      // initialize starting point axis variables //
       var startingPoint = $(this).closest('div').attr('id');
       var startingPosition = $(this).closest('div');
       var pieceType = $(this).attr('class');
@@ -28,14 +29,30 @@ $(function(){
       var yAxis = parseInt(startingPoint[5]);
       var xAxis = letterArray.indexOf(letterVar) + 1;
 
-      function resetVars(yAxis, xAxis) {
-        yAxis = parseInt(startingPoint[5]);
-        xAxis = letterArray.indexOf(letterVar) + 1;
-      }
+      // resets the x and y axis to their starting positions //
 
+
+      // creates the droppable elements for each piece per turn //
        function enableElements(entry) {
          $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
        }
+
+       // push the current x-y axis to an array of droppable boxes //
+       function pushElementToArray(array, xAxis, yAxis) {
+         array.push(letterArray[xAxis - 1] + yAxis);
+       };
+
+       // check for blocking white piece before or after incrementing piece //
+       function checkForBlockingWhite(xAxis, yAxis) {
+         var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
+         return $('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length;
+       };
+
+       // check for blocking black piece before or after incrementing piece //
+       function checkForBlockingBlack(xAxis, yAxis) {
+         var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
+         return $('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length;
+       };
 
       // set forward movement for pawns //
       if (pieceType.match(/glyphicon-pawn black/)) {
@@ -48,97 +65,100 @@ $(function(){
         $(this).parent().prev().droppable('enable');
       }
 
-      // set vertical and horizontal movement for rooks //
+      // set vertical and horizontal movement for black rook //
       else if (pieceType.match(/glyphicon-tower black/)) {
         $('.droppable').droppable("disable");
-        resetVars(yAxis, xAxis);
-         var divArray = [];
+        var yAxis = parseInt(startingPoint[5]);
+        var xAxis = letterArray.indexOf(letterVar) + 1;
+        var divArray = [];
          while (yAxis <= 8 ) {
           pushElementToArray(divArray, xAxis, yAxis);
-
-           function checkForBlockingWhite(xAxis, yAxis) {
-             $('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0;
-           };
-
-           function checkForBlockingBlack(xAxis, yAxis) {
-             $('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0;
-           }
-           function pushElementToArray(array, xAxis, yAxis) {
-             array.push(letterArray[xAxis - 1] + yAxis);
-           }
-
-          if (checkForBlockingWhite(xAxis, yAxis)) { break;}
+          if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;}
            yAxis += 1;
-          if (checkForBlockingBlack(xAxis, yAxis)) { break;}
-         }
-         // set -y vertical for black rook //
-
-         resetVars(yAxis, xAxis);
-         while (yAxis >= 1 ) {
-           pushElementToArray(divArray, xAxis, yAxis);
-          if (checkForBlockingWhite(xAxis, yAixs)) { break;};
-           yAxis -= 1;
-          if (checkForBlockingBlack(xAxis, yAxis)) { break;};
-         }
-
-         // set + x horizontal for black rook //
-         resetVars(yAxis, xAxis);
-         while (xAxis <= 8 ) {
-           pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
-           xAxis += 1;
-           if (checkForBlockingBlack(xAxis, yAxis)) { break;};
-         }
-
-         // set - x horizontal for black rook //
-         resetVars(yAxis, xAxis);
-         while (xAxis >= 1 ) {
-           pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
-           xAxis -= 1;
-           if (checkForBlockingBlack(xAxis, yAxis)) { break;};
+          if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;}
          }
          divArray.forEach(enableElements);
 
-      }
-      else if (pieceType.match(/glyphicon-tower white/)) {
-        $('.droppable').droppable("disable");
-
-        // set +y vertical for black rook //
-        resetVars(yAxis, xAxis);
-         var divArray = [];
-         while (yAxis <= 8 ) {
-           pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingBlack(xAxis, yAixs)) { break;};
-           yAxis += 1;
-           if (checkForBlockingWhite(xAxis, yAxis)) { break;};
-         }
-
          // set -y vertical for black rook //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (yAxis >= 1 ) {
            pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingBlack(xAxis, yAixs)) { break;};
+          if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
            yAxis -= 1;
-           if (checkForBlockingWhite(xAxis, yAxis)) { break;};
+          if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
          }
+         divArray.forEach(enableElements);
 
          // set + x horizontal for black rook //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis <= 8 ) {
            pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingBlack(xAxis, yAixs)) { break;};
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
            xAxis += 1;
-           if (checkForBlockingWhite(xAxis, yAxis)) { break;};
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
          }
+         divArray.forEach(enableElements);
 
          // set - x horizontal for black rook //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis >= 1 ) {
            pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingBlack(xAxis, yAixs)) { break;};
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
            xAxis -= 1;
-           if (checkForBlockingWhite(xAxis, yAxis)) { break;};
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+         }
+         divArray.forEach(enableElements);
+      }
+
+      // set movements for white rook //
+      else if (pieceType.match(/glyphicon-tower white/)) {
+        $('.droppable').droppable("disable");
+        var yAxis = parseInt(startingPoint[5]);
+        var xAxis = letterArray.indexOf(letterVar) + 1;
+        var divArray = [];
+
+        // set +y vertical //
+         while (yAxis <= 8 ) {
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+           yAxis += 1;
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+         }
+         divArray.forEach(enableElements);
+
+         // set -y vertical //
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         while (yAxis >= 1 ) {
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+           yAxis -= 1;
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+         }
+         divArray.forEach(enableElements);
+
+         // set + x horizontal //
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         while (xAxis <= 8 ) {
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+           xAxis += 1;
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+         }
+         divArray.forEach(enableElements);
+
+         // set - x horizontal //
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
+         while (xAxis >= 1 ) {
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+           xAxis -= 1;
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
          }
          divArray.forEach(enableElements);
       }
@@ -146,46 +166,53 @@ $(function(){
       // set diagonal movement for black bishop //
       else if (pieceType.match(/glyphicon-bishop black/)) {
         $('.droppable').droppable("disable");
+        var yAxis = parseInt(startingPoint[5]);
+        var xAxis = letterArray.indexOf(letterVar) + 1;
+        var divArray = [];
 
         // set +x+y diagonal //
-        resetVars(yAxis, xAxis);
-         var divArray = [];
          while (xAxis <= 8 && yAxis <= 8 ) {
            pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
            xAxis += 1;
            yAxis += 1;
-           if (checkForBlockingBlack(xAxis, yAxis)) { break;};
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
          }
+         divArray.forEach(enableElements);
 
          // set -x-y diagonal //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis >= 1 && yAxis >= 1 ) {
            pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
            xAxis -= 1;
            yAxis -= 1;
-           if (checkForBlockingBlack(xAxis, yAxis)) { break;};
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
          }
+         divArray.forEach(enableElements);
 
          // set +x-y diagonal //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis <= 8 && yAxis >= 1 ) {
            pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
            xAxis += 1;
            yAxis -= 1;
-           if (checkForBlockingBlack(xAxis, yAxis)) { break;};
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
          }
+         divArray.forEach(enableElements);
 
          // set -x+y diagonal //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis >= 1 && yAxis <= 8) {
           pushElementToArray(divArray, xAxis, yAxis);
-          if (checkForBlockingWhite(xAxis, yAixs)) { break;};
+          if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
           xAxis -= 1;
           yAxis += 1;
-          if (checkForBlockingBlack(xAxis, yAxis)) { break;};
+          if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
          }
          divArray.forEach(enableElements);
        }
@@ -193,46 +220,53 @@ $(function(){
       // set diagonal movement for white bishop //
       else if (pieceType.match(/glyphicon-bishop white/)) {
         $('.droppable').droppable("disable");
+        var yAxis = parseInt(startingPoint[5]);
+        var xAxis = letterArray.indexOf(letterVar) + 1;
+        var divArray = [];
 
         // set +x+y diagonal //
-        resetVars(yAxis, xAxis);
-         var divArray = [];
          while (xAxis <= 8 && yAxis <= 8 ) {
            pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingBlack(xAxis, yAixs)) { break;};
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
            xAxis += 1;
            yAxis += 1;
-           if (checkForBlockingWhite(xAxis, yAxis)) { break;};
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
          }
+         divArray.forEach(enableElements);
 
          // set -x-y diagonal //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis >= 1 && yAxis >= 1 ) {
            pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingBlack(xAxis, yAixs)) { break;};
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
            xAxis -= 1;
            yAxis -= 1;
-           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
          }
+         divArray.forEach(enableElements);
 
          // set +x-y diagonal //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis <= 8 && yAxis >= 1 ) {
            pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingBlack(xAxis, yAixs)) { break;};
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
            xAxis += 1;
            yAxis -= 1;
-           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
          }
+         divArray.forEach(enableElements);
 
          // set -x+y diagonal //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis >= 1 && yAxis <= 8) {
           pushElementToArray(divArray, xAxis, yAxis);
-          if (checkForBlockingBlack(xAxis, yAixs)) { break;};
+          if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
            xAxis -= 1;
            yAxis += 1;
-           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
          }
          divArray.forEach(enableElements);
        }
@@ -240,8 +274,8 @@ $(function(){
       // set movement for knights //
       else if (pieceType.match(/glyphicon-knight/)) {
         $('.droppable').droppable("disable");
-        resetVars(yAxis, xAxis);
-
+        var yAxis = parseInt(startingPoint[5]);
+        var xAxis = letterArray.indexOf(letterVar) + 1;
         var divArray = [];
 
         divArray.push(letterArray[xAxis -2] + (yAxis-2));
@@ -259,83 +293,98 @@ $(function(){
       // set movements for white queen //
       else if (pieceType.match(/glyphicon-queen white/)) {
         $('.droppable').droppable("disable");
+        var yAxis = parseInt(startingPoint[5]);
+        var xAxis = letterArray.indexOf(letterVar) + 1;
+        var divArray = [];
 
         // set +x+y diagonal //
-        resetVars(yAxis, xAxis);
-         var divArray = [];
          while (xAxis <= 8 && yAxis <= 8 ) {
            pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
            xAxis += 1;
            yAxis += 1;
-           if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
          }
+         divArray.forEach(enableElements);
 
          // set -x-y diagonal //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis >= 1 && yAxis >= 1 ) {
            pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
            xAxis -= 1;
            yAxis -= 1;
-           if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
          }
+         divArray.forEach(enableElements);
 
          // set +x-y diagonal //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis <= 8 && yAxis >= 1 ) {
            pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
            xAxis += 1;
            yAxis -= 1;
-           if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
          }
-        //  divArray.forEach(enableElements);
+         divArray.forEach(enableElements);
+
          // set -x+y diagonal //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis >= 1 && yAxis <= 8) {
           pushElementToArray(divArray, xAxis, yAxis);
-          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+          if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
            xAxis -= 1;
            yAxis += 1;
-          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
-
+          if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
          }
+         divArray.forEach(enableElements);
 
          // set y+ vertical for white queen //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (yAxis <= 8) {
           pushElementToArray(divArray, xAxis, yAxis);
-          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+          if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
            yAxis += 1;
-          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+          if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
          }
+         divArray.forEach(enableElements);
 
          // set y- vertical for white queen //
 
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (yAxis >= 1) {
           pushElementToArray(divArray, xAxis, yAxis);
-          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+          if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
            yAxis -= 1;
-          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+          if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
          }
+         divArray.forEach(enableElements);
 
          // set x+ horizontal for white queen  //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis <= 8 ) {
           pushElementToArray(divArray, xAxis, yAxis);
-          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+          if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
            xAxis += 1;
-          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+          if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
          }
+         divArray.forEach(enableElements);
 
          // set x- horizontal for white Queen //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis >= 1 ) {
           pushElementToArray(divArray, xAxis, yAxis);
-          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+          if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
            xAxis -= 1;
-          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+          if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
          }
          divArray.forEach(enableElements);
       }
@@ -343,96 +392,108 @@ $(function(){
       // set movements for black queen //
       else if (pieceType.match(/glyphicon-queen black/)) {
         $('.droppable').droppable("disable");
+        var yAxis = parseInt(startingPoint[5]);
+        var xAxis = letterArray.indexOf(letterVar) + 1;
+        var divArray = [];
 
         // set +x+y diagonal //
-        resetVars(yAxis, xAxis);
-         var divArray = [];
          while (xAxis <= 8 && yAxis <= 8 ) {
            pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
            xAxis += 1;
            yAxis += 1;
-           if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
          }
+         divArray.forEach(enableElements);
 
          // set -x-y diagonal //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis >= 1 && yAxis >= 1 ) {
            pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
            xAxis -= 1;
            yAxis -= 1;
-           if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
          }
+         divArray.forEach(enableElements);
 
          // set +x-y diagonal //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis <= 8 && yAxis >= 1 ) {
            pushElementToArray(divArray, xAxis, yAxis);
-           if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+           if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
            xAxis += 1;
            yAxis -= 1;
-           if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+           if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
          }
+         divArray.forEach(enableElements);
 
          // set -x+y diagonal //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis >= 1 && yAxis <= 8) {
           pushElementToArray(divArray, xAxis, yAxis);
-          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+          if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
            xAxis -= 1;
            yAxis += 1;
-          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+          if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
          }
+         divArray.forEach(enableElements);
 
          // set x+ horizontal //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis <= 8) {
           pushElementToArray(divArray, xAxis, yAxis);
-          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+          if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
            xAxis += 1;
-          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+          if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
          }
+         divArray.forEach(enableElements);
 
          // set x- horizontal for Queen //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while (xAxis >= 1 ) {
           pushElementToArray(divArray, xAxis, yAxis);
-          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+          if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
            xAxis -= 1;
-          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+          if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
          }
+         divArray.forEach(enableElements);
 
          // set y+ vertical for Queen //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while ( yAxis <= 8) {
           pushElementToArray(divArray, xAxis, yAxis);
-          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+          if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
            yAxis += 1;
-          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+          if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
          }
+         divArray.forEach(enableElements);
 
          // set y- vertical for Queen //
-         resetVars(yAxis, xAxis);
+         yAxis = parseInt(startingPoint[5]);
+         xAxis = letterArray.indexOf(letterVar) + 1;
          while ( yAxis >= 1) {
           pushElementToArray(divArray, xAxis, yAxis);
-          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+          if (checkForBlockingWhite(xAxis, yAxis) !== 0) {break;};
            yAxis -= 1;
-          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
+          if (checkForBlockingBlack(xAxis, yAxis) !== 0) {break;};
          }
-
          divArray.forEach(enableElements);
       }
 
       else if (pieceType.match(/glyphicon-king/)) {
         $('.droppable').droppable("disable");
+        var yAxis = parseInt(startingPoint[5]);
+        var xAxis = letterArray.indexOf(letterVar) + 1;
+        var divArray = [];
 
         // set +x+y diagonal //
-        resetVars(yAxis, xAxis);
-
-        var divArray = [];
-        console.log(xAxis);
-        console.log(yAxis);
         divArray.push(letterArray[xAxis -1] + (yAxis + 1));
         divArray.push(letterArray[xAxis -1] + (yAxis - 1));
         divArray.push(letterArray[xAxis -2] + (yAxis));
@@ -467,6 +528,7 @@ $(function(){
       var oldBox = ui.draggable.parent().attr('id');
       var classCheck = stationBox.children().attr('class');
 
+      // captured pieces go to side bar //
       if (stationBox.children().length > 0 && piece.match(/white/) !== null) {
         stationBox.children().detach().appendTo('.black-pieces');
       }
@@ -474,11 +536,14 @@ $(function(){
         stationBox.children().detach().appendTo('.white-pieces');
       }
 
+      // eliminate jquery draggable position changes //
       ui.draggable.detach().appendTo($(this)).css({'top': '0', 'left': '0'});
 
       var newHome = ui.draggable.parent().attr('id');
 
       var boolTest = $('.white').draggable("option", "disabled");
+
+      // toggle turn for black and white //
       if (boolTest === false) {
         $('.white').draggable('disable');
         $('.black').draggable('enable');
@@ -489,6 +554,5 @@ $(function(){
       }
     }
   });
-
 });
 </script>
