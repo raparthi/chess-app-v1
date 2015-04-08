@@ -57,12 +57,42 @@ $(function(){
       // set forward movement for pawns //
       if (pieceType.match(/glyphicon-pawn black/)) {
         $('.droppable').droppable("disable");
-        $(this).parent().next().droppable('enable');
-
+        var yAxis = parseInt(startingPoint[5]);
+        var xAxis = letterArray.indexOf(letterVar) + 1;
+        var divArray = []
+        if (checkForBlockingWhite(xAxis, (yAxis + 1)) === 0) {
+          $(this).parent().next().droppable('enable');
+        }
+        if (yAxis === 2 && checkForBlockingWhite(xAxis, (yAxis + 2)) === 0 ) {
+          $(this).parent().next().next().droppable('enable');
+        }
+        if (checkForBlockingWhite((xAxis + 1), (yAxis + 1)) !== 0) {
+          pushElementToArray(divArray, (xAxis + 1), (yAxis + 1));
+        }
+        if (checkForBlockingWhite((xAxis - 1), (yAxis + 1)) !== 0) {
+          pushElementToArray(divArray, (xAxis - 1), (yAxis + 1));
+        }
+        divArray.forEach(enableElements);
       }
       else if (pieceType.match(/glyphicon-pawn white/)) {
         $('.droppable').droppable("disable");
-        $(this).parent().prev().droppable('enable');
+        var yAxis = parseInt(startingPoint[5]);
+        var xAxis = letterArray.indexOf(letterVar) + 1;
+        var divArray = [];
+
+        if (checkForBlockingBlack(xAxis, (yAxis -1)) === 0) {
+          $(this).parent().prev().droppable('enable');
+        }
+        if (yAxis === 7 && checkForBlockingBlack(xAxis, (yAxis -2)) === 0) {
+          $(this).parent().prev().prev().droppable('enable');
+        }
+        if (checkForBlockingBlack((xAxis + 1), (yAxis - 1)) !== 0) {
+          pushElementToArray(divArray, (xAxis + 1), (yAxis - 1));
+        }
+        if (checkForBlockingBlack((xAxis - 1), (yAxis - 1)) !== 0) {
+          pushElementToArray(divArray, (xAxis - 1), (yAxis - 1));
+        }
+        divArray.forEach(enableElements);
       }
 
       // set vertical and horizontal movement for black rook //
@@ -528,6 +558,12 @@ $(function(){
       var oldBox = ui.draggable.parent().attr('id');
       var classCheck = stationBox.children().attr('class');
 
+      if (piece.match(/pawn black/) !== null && newBox.match(/8/)) {
+        ui.draggable.removeClass('glyphicon-pawn').addClass('glyphicon-queen');
+      }
+      if (piece.match(/pawn white/) !== null && newBox.match(/1/)) {
+        ui.draggable.removeClass('glyphicon-pawn').addClass('glyphicon-queen');
+      }
       // captured pieces go to side bar //
       if (stationBox.children().length > 0 && piece.match(/white/) !== null) {
         stationBox.children().detach().appendTo('.black-pieces');
