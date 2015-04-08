@@ -22,389 +22,226 @@ $(function(){
       var startingPoint = $(this).closest('div').attr('id');
       var startingPosition = $(this).closest('div');
       var pieceType = $(this).attr('class');
+      var letterVar = startingPoint[4];
+      var numberVar = startingPoint[5];
+      var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
+      var yAxis = parseInt(startingPoint[5]);
+      var xAxis = letterArray.indexOf(letterVar) + 1;
+
+      function resetVars(yAxis, xAxis) {
+        yAxis = parseInt(startingPoint[5]);
+        xAxis = letterArray.indexOf(letterVar) + 1;
+      }
+
+       function enableElements(entry) {
+         $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
+       }
 
       // set forward movement for pawns //
       if (pieceType.match(/glyphicon-pawn black/)) {
         $('.droppable').droppable("disable");
         $(this).parent().next().droppable('enable');
+
       }
       else if (pieceType.match(/glyphicon-pawn white/)) {
         $('.droppable').droppable("disable");
         $(this).parent().prev().droppable('enable');
       }
+
       // set vertical and horizontal movement for rooks //
       else if (pieceType.match(/glyphicon-tower black/)) {
         $('.droppable').droppable("disable");
-        var letterVar = startingPoint[4];
-        var numberVar = startingPoint[5];
-        $('.droppable').droppable("disable");
-
-        // set +y vertical for black rook //
-
-         var yAxis = parseInt(startingPoint[5]);
-         var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
-         var xAxis = letterArray.indexOf(letterVar) + 1;
+        resetVars(yAxis, xAxis);
          var divArray = [];
          while (yAxis <= 8 ) {
-           divArray.push(letterArray[xAxis -1] + yAxis);
+          pushElementToArray(divArray, xAxis, yAxis);
 
-           //check for this white piece, then for next black piece //
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
+           function checkForBlockingWhite(xAxis, yAxis) {
+             $('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0;
+           };
+
+           function checkForBlockingBlack(xAxis, yAxis) {
+             $('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0;
+           }
+           function pushElementToArray(array, xAxis, yAxis) {
+             array.push(letterArray[xAxis - 1] + yAxis);
            }
 
+          if (checkForBlockingWhite(xAxis, yAxis)) { break;}
            yAxis += 1;
-
-           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+          if (checkForBlockingBlack(xAxis, yAxis)) { break;}
          }
          // set -y vertical for black rook //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
 
+         resetVars(yAxis, xAxis);
          while (yAxis >= 1 ) {
-           divArray.push(letterArray[xAxis -1] + yAxis);
-
-           //check for this white piece, then for next black piece //
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
-
+           pushElementToArray(divArray, xAxis, yAxis);
+          if (checkForBlockingWhite(xAxis, yAixs)) { break;};
            yAxis -= 1;
-
-           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+          if (checkForBlockingBlack(xAxis, yAxis)) { break;};
          }
 
          // set + x horizontal for black rook //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
-
+         resetVars(yAxis, xAxis);
          while (xAxis <= 8 ) {
-           divArray.push(letterArray[xAxis -1] + yAxis);
-
-           //check for this white piece, then for next black piece //
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
-
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
            xAxis += 1;
-
-           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+           if (checkForBlockingBlack(xAxis, yAxis)) { break;};
          }
 
          // set - x horizontal for black rook //
+         resetVars(yAxis, xAxis);
          while (xAxis >= 1 ) {
-           divArray.push(letterArray[xAxis -1] + yAxis);
-
-           //check for this white piece, then for next black piece //
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
-
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
            xAxis -= 1;
-
-           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+           if (checkForBlockingBlack(xAxis, yAxis)) { break;};
          }
-         console.log(divArray);
          divArray.forEach(enableElements);
-         function enableElements(entry) {
-           $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
-         }
 
       }
       else if (pieceType.match(/glyphicon-tower white/)) {
         $('.droppable').droppable("disable");
-        var letterVar = startingPoint[4];
-        var numberVar = startingPoint[5];
-        $('.droppable').droppable("disable");
 
         // set +y vertical for black rook //
-
-         var yAxis = parseInt(startingPoint[5]);
-         var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
-         var xAxis = letterArray.indexOf(letterVar) + 1;
+        resetVars(yAxis, xAxis);
          var divArray = [];
          while (yAxis <= 8 ) {
-           divArray.push(letterArray[xAxis -1] + yAxis);
-
-           //check for this white piece, then for next black piece //
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
-
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingBlack(xAxis, yAixs)) { break;};
            yAxis += 1;
-
-           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+           if (checkForBlockingWhite(xAxis, yAxis)) { break;};
          }
+
          // set -y vertical for black rook //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
-
+         resetVars(yAxis, xAxis);
          while (yAxis >= 1 ) {
-           divArray.push(letterArray[xAxis -1] + yAxis);
-
-           //check for this white piece, then for next black piece //
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
-
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingBlack(xAxis, yAixs)) { break;};
            yAxis -= 1;
-
-           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+           if (checkForBlockingWhite(xAxis, yAxis)) { break;};
          }
 
          // set + x horizontal for black rook //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
-
+         resetVars(yAxis, xAxis);
          while (xAxis <= 8 ) {
-           divArray.push(letterArray[xAxis -1] + yAxis);
-
-           //check for this white piece, then for next black piece //
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
-
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingBlack(xAxis, yAixs)) { break;};
            xAxis += 1;
-
-           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+           if (checkForBlockingWhite(xAxis, yAxis)) { break;};
          }
 
          // set - x horizontal for black rook //
+         resetVars(yAxis, xAxis);
          while (xAxis >= 1 ) {
-           divArray.push(letterArray[xAxis -1] + yAxis);
-
-           //check for this white piece, then for next black piece //
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
-
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingBlack(xAxis, yAixs)) { break;};
            xAxis -= 1;
-
-           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+           if (checkForBlockingWhite(xAxis, yAxis)) { break;};
          }
-         console.log(divArray);
          divArray.forEach(enableElements);
-        //  function enableElements(entry) {
-        //    $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
-        //  }
-
       }
 
-      // set diagonal movement for bishops //
-
+      // set diagonal movement for black bishop //
       else if (pieceType.match(/glyphicon-bishop black/)) {
         $('.droppable').droppable("disable");
 
         // set +x+y diagonal //
-         var letterVar = startingPoint[4];
-         var yAxis = parseInt(startingPoint[5]);
-         var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
-         var xAxis = letterArray.indexOf(letterVar) + 1;
+        resetVars(yAxis, xAxis);
          var divArray = [];
          while (xAxis <= 8 && yAxis <= 8 ) {
-
-           divArray.push(letterArray[xAxis -1] + yAxis);
-
-           //check for this white piece, then for next black piece //
-           var lastElement = divArray[divArray.length -1];
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
-
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
            xAxis += 1;
            yAxis += 1;
-           
-           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
-
+           if (checkForBlockingBlack(xAxis, yAxis)) { break;};
          }
-         divArray.forEach(enableElements);
-        //  function enableElements(entry) {
-        //    $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
-        //  }
-         // set -x-y diagonal //
 
          // set -x-y diagonal //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+         resetVars(yAxis, xAxis);
          while (xAxis >= 1 && yAxis >= 1 ) {
-
-           var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis -1] + yAxis + ']');
-           if (tempPosition.children('span[id*=white]').length !== 0) {
-             break;
-           }
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
            xAxis -= 1;
            yAxis -= 1;
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+           if (checkForBlockingBlack(xAxis, yAxis)) { break;};
          }
-         divArray.forEach(enableElements);
-         // set +x-y diagonal //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
-         while (xAxis <= 8 && yAxis >= 1 ) {
-           var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-           if (tempPosition.children('span[id*=white]').length !== 0) {
-             break;
-           }
 
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+         // set +x-y diagonal //
+         resetVars(yAxis, xAxis);
+         while (xAxis <= 8 && yAxis >= 1 ) {
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
            xAxis += 1;
            yAxis -= 1;
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+           if (checkForBlockingBlack(xAxis, yAxis)) { break;};
          }
-         divArray.forEach(enableElements);
+
          // set -x+y diagonal //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+         resetVars(yAxis, xAxis);
          while (xAxis >= 1 && yAxis <= 8) {
-
-          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
-           xAxis -= 1;
-           yAxis += 1;
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+          pushElementToArray(divArray, xAxis, yAxis);
+          if (checkForBlockingWhite(xAxis, yAixs)) { break;};
+          xAxis -= 1;
+          yAxis += 1;
+          if (checkForBlockingBlack(xAxis, yAxis)) { break;};
          }
          divArray.forEach(enableElements);
-         console.log(divArray);
        }
-      // set diagonal movement for white bishop //
 
+      // set diagonal movement for white bishop //
       else if (pieceType.match(/glyphicon-bishop white/)) {
         $('.droppable').droppable("disable");
 
         // set +x+y diagonal //
-         var letterVar = startingPoint[4];
-         var yAxis = parseInt(startingPoint[5]);
-         var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
-         var xAxis = letterArray.indexOf(letterVar) + 1;
+        resetVars(yAxis, xAxis);
          var divArray = [];
          while (xAxis <= 8 && yAxis <= 8 ) {
-
-           divArray.push(letterArray[xAxis -1] + yAxis);
-
-           //check for this white piece, then for next black piece //
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
-
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingBlack(xAxis, yAixs)) { break;};
            xAxis += 1;
            yAxis += 1;
-           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
-
+           if (checkForBlockingWhite(xAxis, yAxis)) { break;};
          }
-         divArray.forEach(enableElements);
-        //  function enableElements(entry) {
-        //    $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
-        //  }
+
          // set -x-y diagonal //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+         resetVars(yAxis, xAxis);
          while (xAxis >= 1 && yAxis >= 1 ) {
-
-           var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis -1] + yAxis + ']');
-           if (tempPosition.children('span[id*=black]').length !== 0) {
-             break;
-           }
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingBlack(xAxis, yAixs)) { break;};
            xAxis -= 1;
            yAxis -= 1;
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
          }
-         divArray.forEach(enableElements);
-         // set +x-y diagonal //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
-         while (xAxis <= 8 && yAxis >= 1 ) {
-           var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-           if (tempPosition.children('span[id*=black]').length !== 0) {
-             break;
-           }
 
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+         // set +x-y diagonal //
+         resetVars(yAxis, xAxis);
+         while (xAxis <= 8 && yAxis >= 1 ) {
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingBlack(xAxis, yAixs)) { break;};
            xAxis += 1;
            yAxis -= 1;
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
          }
-         divArray.forEach(enableElements);
+
          // set -x+y diagonal //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+         resetVars(yAxis, xAxis);
          while (xAxis >= 1 && yAxis <= 8) {
-
-          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+          pushElementToArray(divArray, xAxis, yAxis);
+          if (checkForBlockingBlack(xAxis, yAixs)) { break;};
            xAxis -= 1;
            yAxis += 1;
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+           if (checkForBlockingWhite(xAxis, yAixs)) { break;};
          }
          divArray.forEach(enableElements);
-         console.log(divArray);
        }
 
       // set movement for knights //
-
       else if (pieceType.match(/glyphicon-knight/)) {
         $('.droppable').droppable("disable");
-        var letterVar = startingPoint[4];
-        var yAxis = parseInt(startingPoint[5]);
-        var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
-        var xAxis = letterArray.indexOf(letterVar) + 1;
+        resetVars(yAxis, xAxis);
+
         var divArray = [];
 
         divArray.push(letterArray[xAxis -2] + (yAxis-2));
@@ -420,187 +257,87 @@ $(function(){
       }
 
       // set movements for white queen //
-
       else if (pieceType.match(/glyphicon-queen white/)) {
         $('.droppable').droppable("disable");
 
         // set +x+y diagonal //
-         var letterVar = startingPoint[4];
-         var yAxis = parseInt(startingPoint[5]);
-         var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
-         var xAxis = letterArray.indexOf(letterVar) + 1;
+        resetVars(yAxis, xAxis);
          var divArray = [];
          while (xAxis <= 8 && yAxis <= 8 ) {
-
-           divArray.push(letterArray[xAxis -1] + yAxis);
-
-           //check for this white piece, then for next black piece //
-           var lastElement = divArray[divArray.length -1];
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
-
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingWhite(xAxis, yAxis)) {break;};
            xAxis += 1;
            yAxis += 1;
-           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
-
+           if (checkForBlockingBlack(xAxis, yAxis)) {break;};
          }
-         divArray.forEach(enableElements);
-        //  function enableElements(entry) {
-        //    $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
-        //  }
+
          // set -x-y diagonal //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+         resetVars(yAxis, xAxis);
          while (xAxis >= 1 && yAxis >= 1 ) {
-
-           var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis -1] + yAxis + ']');
-           if (tempPosition.children('span[id*=black]').length !== 0) {
-             break;
-           }
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingWhite(xAxis, yAxis)) {break;};
            xAxis -= 1;
            yAxis -= 1;
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+           if (checkForBlockingBlack(xAxis, yAxis)) {break;};
          }
-         divArray.forEach(enableElements);
-         // set +x-y diagonal //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
-         while (xAxis <= 8 && yAxis >= 1 ) {
-           var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-           if (tempPosition.children('span[id*=black]').length !== 0) {
-             break;
-           }
 
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+         // set +x-y diagonal //
+         resetVars(yAxis, xAxis);
+         while (xAxis <= 8 && yAxis >= 1 ) {
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingWhite(xAxis, yAxis)) {break;};
            xAxis += 1;
            yAxis -= 1;
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+           if (checkForBlockingBlack(xAxis, yAxis)) {break;};
          }
-         divArray.forEach(enableElements);
+        //  divArray.forEach(enableElements);
          // set -x+y diagonal //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+         resetVars(yAxis, xAxis);
          while (xAxis >= 1 && yAxis <= 8) {
-
-          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+          pushElementToArray(divArray, xAxis, yAxis);
+          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
            xAxis -= 1;
            yAxis += 1;
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
+
          }
-         divArray.forEach(enableElements);
-         console.log(divArray);
 
          // set y+ vertical for white queen //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+         resetVars(yAxis, xAxis);
          while (yAxis <= 8) {
-
-          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
-
+          pushElementToArray(divArray, xAxis, yAxis);
+          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
            yAxis += 1;
-
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
          }
-         divArray.forEach(enableElements);
-         console.log(divArray);
 
          // set y- vertical for white queen //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+
          while (yAxis >= 1) {
-
-          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
-
+          pushElementToArray(divArray, xAxis, yAxis);
+          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
            yAxis -= 1;
-
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
          }
-         divArray.forEach(enableElements);
-         console.log(divArray);
 
          // set x+ horizontal for white queen  //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+         resetVars(yAxis, xAxis);
          while (xAxis <= 8 ) {
-
-          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
-
+          pushElementToArray(divArray, xAxis, yAxis);
+          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
            xAxis += 1;
-
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
          }
-         divArray.forEach(enableElements);
-         console.log(divArray);
 
          // set x- horizontal for white Queen //
-
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+         resetVars(yAxis, xAxis);
          while (xAxis >= 1 ) {
-
-          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
-
+          pushElementToArray(divArray, xAxis, yAxis);
+          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
            xAxis -= 1;
-
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
          }
          divArray.forEach(enableElements);
-         console.log(divArray);
       }
 
       // set movements for black queen //
@@ -608,201 +345,91 @@ $(function(){
         $('.droppable').droppable("disable");
 
         // set +x+y diagonal //
-         var letterVar = startingPoint[4];
-         var yAxis = parseInt(startingPoint[5]);
-         var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
-         var xAxis = letterArray.indexOf(letterVar) + 1;
+        resetVars(yAxis, xAxis);
          var divArray = [];
          while (xAxis <= 8 && yAxis <= 8 ) {
-
-
-
-           divArray.push(letterArray[xAxis -1] + yAxis);
-
-           //check for this white piece, then for next black piece //
-           var lastElement = divArray[divArray.length -1];
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
-
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingBlack(xAxis, yAxis)) {break;};
            xAxis += 1;
-           yAxis += 1
-
-           if ($('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
-
+           yAxis += 1;
+           if (checkForBlockingWhite(xAxis, yAxis)) {break;};
          }
-         divArray.forEach(enableElements);
-        //  function enableElements(entry) {
-        //    $('.chess-holder').children('div[class*=col]').children('div[id*='+ entry +']').droppable('enable');
-        //  }
+
          // set -x-y diagonal //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+         resetVars(yAxis, xAxis);
          while (xAxis >= 1 && yAxis >= 1 ) {
-
-           var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis -1] + yAxis + ']');
-           if (tempPosition.children('span[id*=white]').length !== 0) {
-             break;
-           }
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingBlack(xAxis, yAxis)) {break;};
            xAxis -= 1;
            yAxis -= 1;
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+           if (checkForBlockingWhite(xAxis, yAxis)) {break;};
          }
-         divArray.forEach(enableElements);
-         // set +x-y diagonal //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
-         while (xAxis <= 8 && yAxis >= 1 ) {
-           var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-           if (tempPosition.children('span[id*=white]').length !== 0) {
-             break;
-           }
 
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+         // set +x-y diagonal //
+         resetVars(yAxis, xAxis);
+         while (xAxis <= 8 && yAxis >= 1 ) {
+           pushElementToArray(divArray, xAxis, yAxis);
+           if (checkForBlockingBlack(xAxis, yAxis)) {break;};
            xAxis += 1;
            yAxis -= 1;
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+           if (checkForBlockingWhite(xAxis, yAxis)) {break;};
          }
-         divArray.forEach(enableElements);
+
          // set -x+y diagonal //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+         resetVars(yAxis, xAxis);
          while (xAxis >= 1 && yAxis <= 8) {
-
-          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+          pushElementToArray(divArray, xAxis, yAxis);
+          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
            xAxis -= 1;
            yAxis += 1;
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
          }
-
-         divArray.forEach(enableElements);
-         console.log(divArray);
-
 
          // set x+ horizontal //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+         resetVars(yAxis, xAxis);
          while (xAxis <= 8) {
-
-          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+          pushElementToArray(divArray, xAxis, yAxis);
+          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
            xAxis += 1;
-
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
          }
-
-         divArray.forEach(enableElements);
-         console.log(divArray);
-
 
          // set x- horizontal for Queen //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+         resetVars(yAxis, xAxis);
          while (xAxis >= 1 ) {
-
-          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
+          pushElementToArray(divArray, xAxis, yAxis);
+          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
            xAxis -= 1;
-
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
          }
-
-         divArray.forEach(enableElements);
-         console.log(divArray);
 
          // set y+ vertical for Queen //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+         resetVars(yAxis, xAxis);
          while ( yAxis <= 8) {
-
-          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
-
+          pushElementToArray(divArray, xAxis, yAxis);
+          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
            yAxis += 1;
-
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
          }
-
-         divArray.forEach(enableElements);
-         console.log(divArray);
 
          // set y- vertical for Queen //
-         xAxis = letterArray.indexOf(letterVar) + 1;
-         yAxis = parseInt(startingPoint[5]);
+         resetVars(yAxis, xAxis);
          while ( yAxis >= 1) {
-
-          var tempPosition = $('.col-md-1').children('div[id*=' + letterArray[xAxis] + (yAxis-1) + ']');
-
-
-           divArray.push(letterArray[xAxis - 1] + yAxis);
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length !== 0) {
-             break;
-           }
-
+          pushElementToArray(divArray, xAxis, yAxis);
+          if (checkForBlockingBlack(xAxis, yAxis)) {break;};
            yAxis -= 1;
-
-           if ($('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length !== 0) {
-             break;
-           }
+          if (checkForBlockingWhite(xAxis, yAxis)) {break;};
          }
 
          divArray.forEach(enableElements);
-         console.log(divArray);
-
       }
 
       else if (pieceType.match(/glyphicon-king/)) {
         $('.droppable').droppable("disable");
-        var letterVar = startingPoint[4];
-        var numberVar = startingPoint[5];
+
         // set +x+y diagonal //
-        var letterVar = startingPoint[4];
-        var yAxis = parseInt(startingPoint[5]);
-        var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
-        var xAxis = letterArray.indexOf(letterVar) + 1;
+        resetVars(yAxis, xAxis);
+
         var divArray = [];
         console.log(xAxis);
         console.log(yAxis);
@@ -816,17 +443,15 @@ $(function(){
         divArray.push(letterArray[xAxis] + (yAxis - 1));
 
         divArray.forEach(enableElements);
-        console.log(divArray);
       }
 
+      // disable opponent side during turns //
       if (pieceType.match(/white/) !== null) {
         $('.white').parent().droppable("disable");
       }
       else if (pieceType.match(/black/) !== null) {
         $('.black').parent().droppable("disable");
       }
-
-
     }
   });
 
@@ -849,13 +474,9 @@ $(function(){
         stationBox.children().detach().appendTo('.white-pieces');
       }
 
-
       ui.draggable.detach().appendTo($(this)).css({'top': '0', 'left': '0'});
 
       var newHome = ui.draggable.parent().attr('id');
-      console.log(oldBox);
-      console.log(newHome);
-
 
       var boolTest = $('.white').draggable("option", "disabled");
       if (boolTest === false) {
@@ -868,7 +489,6 @@ $(function(){
       }
     }
   });
-
 
 });
 </script>
