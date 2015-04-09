@@ -47,8 +47,26 @@
   background: #EEE;
   border-radius: 8px;
   box-shadow: -2px 2px 2px #ccc;
+  .table-holder {
+    height: 90%;
+    overflow: auto;
+  }
+  .text-holder.table {
+    height: 100%;
+    margin: 20px 0 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: -1px 1px #ccc;
+    tbody {
 
+    }
+  }
+}
 
+tr {
+  display: inline-table;
+  height: 40px;
+  width: 270px;
 }
 .captured-pieces {
   height: 538px;
