@@ -3,12 +3,20 @@
 <div class="col-md-9">
   <div class="chess-holder">
     <div class="col-md-2 timer-holder clock" style="font-size: 20px;">
+      <div class="button-holder">
+    <span class="glyphicon glyphicon-hourglass button-glyphs"></span>  <p>Player 1</p><span class="glyphicon glyphicon-minus button-glyphs"></span>
+      </div>
         <div class="time-box">
           <div id="time0" class="time-digits"></div>
+        </div>
+        <div class="space-keeper"></div>
+        <div class="button-holder second-button-holder">
+        <span class="glyphicon glyphicon-hourglass button-glyphs"></span><p>Player 2</p><span class="glyphicon glyphicon-minus button-glyphs"></span>
         </div>
         <div class="time-box">
           <div id="time1" class="time-digits"></div>
         </div>
+        <div class="space-keeper"></div>
     </div>
     <div class="col-md-1">
       <div class="box droppable even border-left border-top" id="box-a1"><span class="glyphicon glyphicon-tower black draggable"></div>
@@ -97,15 +105,22 @@
   </div>
 </div>
 
-<div class="sidebar col-md-3">
-  <div class="table-holder">
-  <table class="table text-holder table-striped">
+<div class="sidebar-nav col-md-3">
+  <div class="table-holder container-sm">
+  <table class="table text-holder">
     <tbody class="text-list">
     </tbody>
   </table>
-</div>
+  </div>
+  <div class="buttons">
+    <button class="btn"><span class="glyphicon glyphicon-hand-right button-glyphs"></span><li> <%= link_to 'DRAW', "#", style: 'text-decoration: none; color: white;' %></li></button>
+    <td></td>
+    <button class="btn"><span class="glyphicon glyphicon-flag button-glyphs"></span><li> <%= link_to 'QUIT', "#", style: 'text-decoration: none; color: white;' %></li></button>
+  </div>
 </div>
 
-<div class="row bottom-row container"><div class="footer-color"></div></div>
+
+<div class="bottom-row"></div>
 
 <script src="assets/chess-clock.js"></script>
+<script src="assets/chess.js"></script>

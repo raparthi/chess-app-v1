@@ -2,6 +2,10 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+.col-md-9 {
+  background: #E4E4E4;
+  margin-top: 50px;
+}
 .glyphicon {
   padding: .3em;
   font-size: 3.2em;
@@ -23,6 +27,7 @@
 .chess-holder {
   display: block;
   margin-left: 10px;
+  margin-top: 20px;
 }
 .odd {
   background: #FFFF99;
@@ -42,38 +47,95 @@
   color: black;
   text-shadow: 2px 2px 2px #777;
 }
-.sidebar {
-  height: 538px;
-  background: #EEE;
-  border-radius: 8px;
-  box-shadow: -2px 2px 2px #ccc;
+.sidebar-nav {
+  margin-top: 50px;
+  float: right;
+
+
   .table-holder {
-    height: 90%;
-    overflow: auto;
-  }
-  .text-holder.table {
-    height: 100%;
-    margin: 20px 0 20px;
+    margin: 20px 0px 0 0;
+    height: 450px;
     background: white;
-    border-radius: 8px;
-    box-shadow: -1px 1px #ccc;
-    tbody {
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-right: 1px #c4c4c4;
+  }
+  .text-holder {
+    height: 100%;
+    width: 270px;
+  }
+}
+.pipe {
+  display: inline;
+  color: #e4e4e4;
+  font-weight: 200;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+tr {
+  display: inline-table;  height: 40px;
+  width: 270px;
+  border-bottom: 1px solid #e4e4e4;
+  th {
+    font-family:  "OpenSansLight","Helvetica Neue",Arial,sans-serif;
+    font-size: 18px;
+    line-height: normal;
+    font-weight: normal;
+    color: #777;
+  }
+}
+b {
+  font-family: "OpenSansRegular","Helvetica Neue",Arial,sans-serif;
+  font-size: 20px;
+  color: #78baa1;
+  line-height: normal;
+}
 
-    }
+.buttons {
+  height: 50px;
+  background: #e4e4e4;
+  box-shadow: -2px 2px #c4c4c4;
+  box-shadow: 2px 2px #c4c4c4;
+  text-align: center;
+  clear: both;
+  padding-top: 7px;
+
+}
+.button-glyphs {
+  font-size: 22px;
+  color: white;
+  background: #548271;
+  margin-top: -8px;
+  margin-left: -16px;
+  float: left;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+button {
+  clear: both;
+  height: 35px;
+  width: 125px;
+  background: #78baa1;
+  border-radius: 0px;
+
+  li {
+    list-style-type: none;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin: auto;
+    color: #bbb;
+    font-weight: bold;
+    text-align: center;
+    font-family:"OpenSansRegular","Helvetica Neue",Arial,sans-serif;
   }
 }
 
-tr {
-  display: inline-table;
-  height: 40px;
-  width: 270px;
-}
 .captured-pieces {
   height: 538px;
-  background: #eee;
+  background: white;
   margin-left: 20px;
-  border-radius: 8px;
-  box-shadow: -2px 2px 2px #ccc;
   .black-pieces {
     height: 50%;
     border-top: 2px solid #CCC;
@@ -83,22 +145,68 @@ tr {
   }
 }
 
+p {
+  font-size: 14px;
+  font-weight: bold;
+  padding-left: 7px;
+  letter-spacing: 1.8px;
+  display: inline;
+  font-family:"OpenSansRegular","Helvetica Neue",Arial,sans-serif;
+
+}
+.glyphicon-hourglass {
+  font-size: 18.5px;
+  float: left;
+  margin-top: -1px;
+  background: white;
+  color:  #78baa1;
+  border-bottom: 1px solid #b4b4b4;
+}
+.glyphicon-minus {
+  float: right;
+  font-size: 18.5px;
+  margin: 0;
+  margin-top: -1px;
+  margin-right: -15px;
+  background: white;
+  color: #555;
+  border-bottom: 1px solid #b4b4b4;
+  border-left: 1px solid #b4b4b4;
+  border-radius: 0;
+}
+
+.button-holder {
+  width: 100%;
+  height: 31px;
+  border-bottom: 1px solid #b4b4b4;
+}
+
+.space-keeper {
+  height: 180px;
+  background: #e4e4e4;
+  margin-top: 20px;
+  margin-left: -15px;
+  margin-right: -15px;
+}
 .timer-holder {
   height: 538px;
-  background: #eee;
+  background: white;
   margin-right: 15px;
-  border-radius: 8px;
-  box-shadow: -2px 2px 2px #ccc;
+  display: inline;
+  clear: both;
   .time-box {
-    border-radius: 20px;
-    box-shadow: -2px 3px 2px #aaa;
-    background: #CCC;
-    height: 3em;
-    margin: 15px 0 290px;
+    background: #8b4441;
+    height: 50px;
+    margin: 15px 0 0px;
+    clear: both;
+    border-radius: 3px;
     .time-digits {
-      font-size: 40px;
+      font-size: 30px;
       text-align: center;
-      font-weight: 500;
+      color: white;
+      font-weight: 200;
+      letter-spacing: 1.5px;
+      font-family: "OpenSansLight","Helvetica Neue",Arial,sans-serif;
     }
   }
 }
@@ -106,15 +214,8 @@ tr {
 .bottom-row {
   height: 100px;
   clear: both;
-  .footer-color {
-    background: #eee;
-    height: 80px;
-    margin-top: 20px;
-    margin-left: 20px;
-    width: 109%;
-    border-radius: 8px;
-    box-shadow: -2px 2px 2px #ccc;
-  }
+  background: #e4e4e4;
+
 }
 .border-left {
   border-left: 1px solid black;
@@ -127,4 +228,7 @@ tr {
 }
 .border-right {
   border-right: 1px solid black;
+}
+body {
+  background-color: #e4e4e4;
 }
