@@ -45,7 +45,8 @@
 .sidebar {
   height: 538px;
   background: #EEE;
-
+  border-radius: 8px;
+  box-shadow: -2px 2px 2px #ccc;
 
   .black-pieces {
     height: 50%;
@@ -59,12 +60,28 @@
   height: 538px;
   background: #eee;
   margin-left: 20px;
+  border-radius: 8px;
+  box-shadow: -2px 2px 2px #ccc;
 }
 
 .timer-holder {
   height: 538px;
   background: #eee;
   margin-right: 15px;
+  border-radius: 8px;
+  box-shadow: -2px 2px 2px #ccc;
+  .time-box {
+    border-radius: 20px;
+    box-shadow: -2px 3px 2px #aaa;
+    background: #CCC;
+    height: 3em;
+    margin: 15px 0 290px;
+    .time-digits {
+      font-size: 40px;
+      text-align: center;
+      font-weight: 500;
+    }
+  }
 }
 
 .bottom-row {
@@ -76,6 +93,8 @@
     margin-top: 20px;
     margin-left: 20px;
     width: 109%;
+    border-radius: 8px;
+    box-shadow: -2px 2px 2px #ccc;
   }
 }
 .border-left {
