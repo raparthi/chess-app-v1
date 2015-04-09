@@ -568,10 +568,10 @@ $(function(){
       }
       // captured pieces go to side bar //
       if (stationBox.children().length > 0 && piece.match(/white/) !== null) {
-        stationBox.children().detach().appendTo('.black-pieces');
+        stationBox.children().detach().appendTo('.black-pieces').css('font-size', '25px');
       }
       else if (stationBox.children().length > 0 && piece.match(/black/) !== null) {
-        stationBox.children().detach().appendTo('.white-pieces');
+        stationBox.children().detach().appendTo('.white-pieces').css('font-size', '25px');
       }
 
       // eliminate jquery draggable position changes //

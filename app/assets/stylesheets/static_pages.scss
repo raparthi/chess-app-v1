@@ -48,13 +48,7 @@
   border-radius: 8px;
   box-shadow: -2px 2px 2px #ccc;
 
-  .black-pieces {
-    height: 50%;
-    border-top: 2px solid #CCC;
-  }
-  .white-pieces {
-    height: 50%;
-  }
+
 }
 .captured-pieces {
   height: 538px;
@@ -62,6 +56,13 @@
   margin-left: 20px;
   border-radius: 8px;
   box-shadow: -2px 2px 2px #ccc;
+  .black-pieces {
+    height: 50%;
+    border-top: 2px solid #CCC;
+  }
+  .white-pieces {
+    height: 50%;
+  }
 }
 
 .timer-holder {
