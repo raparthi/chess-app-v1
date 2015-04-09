@@ -132,13 +132,36 @@ button {
   }
 }
 
+.glyphicon-ok-circle {
+  margin-top: -1px;
+  font-size: 24.7px;
+}
 .captured-pieces {
   height: 538px;
   background: white;
   margin-left: 20px;
+  .button-holder {
+    background:  #78baa1;
+    width: 137px;
+    height: 40.2px;
+    border: 0;
+  }
+  p {
+    text-align: center;
+    display: block;
+    letter-spacing: 1.2px;
+    color: white;
+    font-weight: 400;
+    margin: auto;
+  }
+  .space-bottom {
+    height: 10px;
+    background: #e4e4e4;
+    margin-right: -15px;
+    margin-left: -15px;
+  }
   .black-pieces {
     height: 50%;
-    border-top: 2px solid #CCC;
   }
   .white-pieces {
     height: 50%;
@@ -152,8 +175,8 @@ p {
   letter-spacing: 1.8px;
   display: inline;
   font-family:"OpenSansRegular","Helvetica Neue",Arial,sans-serif;
-
 }
+
 .glyphicon-hourglass {
   font-size: 18.5px;
   float: left;
@@ -179,14 +202,25 @@ p {
   width: 100%;
   height: 31px;
   border-bottom: 1px solid #b4b4b4;
+  p b {
+    font-size: 16px;
+  }
 }
 
 .space-keeper {
   height: 180px;
   background: #e4e4e4;
-  margin-top: 20px;
+  margin-top: 10px;
   margin-left: -15px;
   margin-right: -15px;
+  .line-break {
+    display: block;
+    height: .1px;
+  }
+  .player-info {
+    background: white;
+    height: 140px;
+  }
 }
 .timer-holder {
   height: 538px;
@@ -197,7 +231,7 @@ p {
   .time-box {
     background: #8b4441;
     height: 50px;
-    margin: 15px 0 0px;
+    margin: 12px 0 0px;
     clear: both;
     border-radius: 3px;
     .time-digits {
@@ -218,16 +252,16 @@ p {
 
 }
 .border-left {
-  border-left: 1px solid black;
+  border-left: 1px solid #b4b4b4;
 }
 .border-top {
-  border-top: 1px solid black;
+  border-top: 1px solid #b4b4b4;
 }
 .border-bottom {
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #b4b4b4;
 }
 .border-right {
-  border-right: 1px solid black;
+  border-right: 1px solid #b4b4b4;
 }
 body {
   background-color: #e4e4e4;

@@ -4,19 +4,35 @@
   <div class="chess-holder">
     <div class="col-md-2 timer-holder clock" style="font-size: 20px;">
       <div class="button-holder">
-    <span class="glyphicon glyphicon-hourglass button-glyphs"></span>  <p>Player 1</p><span class="glyphicon glyphicon-minus button-glyphs"></span>
+    <span class="glyphicon glyphicon-hourglass button-glyphs"></span>  <p>Player <b>1</b></p><span class="glyphicon glyphicon-minus button-glyphs"></span>
       </div>
         <div class="time-box">
           <div id="time0" class="time-digits"></div>
         </div>
-        <div class="space-keeper"></div>
+        <div class="space-keeper">
+          <p class="line-break"></p>
+          <div class="player-info">
+            <p>Player 1 Info</p>
+            <p>Location</p>
+            <p>Ranking</p><br>
+            <p>User Ranking</p>
+          </div>
+        </div>
         <div class="button-holder second-button-holder">
-        <span class="glyphicon glyphicon-hourglass button-glyphs"></span><p>Player 2</p><span class="glyphicon glyphicon-minus button-glyphs"></span>
+        <span class="glyphicon glyphicon-hourglass button-glyphs"></span><p>Player <b>2</b></p><span class="glyphicon glyphicon-minus button-glyphs"></span>
         </div>
         <div class="time-box">
           <div id="time1" class="time-digits"></div>
         </div>
-        <div class="space-keeper"></div>
+        <div class="space-keeper">
+          <p class="line-break"></p>
+          <div class="player-info">
+            <p>Player 2 Info</p>
+            <p>Location</p>
+            <p>Ranking</p><br>
+            <p>User Ranking</p>
+          </div>
+        </div>
     </div>
     <div class="col-md-1">
       <div class="box droppable even border-left border-top" id="box-a1"><span class="glyphicon glyphicon-tower black draggable"></div>
@@ -99,8 +115,18 @@
       <div class="box droppable even border-bottom border-right" id="box-h8" ><span class="draggable glyphicon glyphicon-tower white"></span></div>
     </div>
     <div class="col-md-2 captured-pieces">
-      <div class="white-pieces"></div>
-      <div class="black-pieces"></div>
+      <div class="white-pieces">
+        <div class="button-holder">
+          <span class="glyphicon glyphicon-ok-circle button-glyphs"></span><p>Captured Black</p>
+        </div>
+      </div>
+      <div class="space-bottom"></div>
+      <div class="black-pieces">
+        <div class="button-holder">
+        <span class="glyphicon glyphicon-ok-circle button-glyphs"></span><p>Captured White</p>
+        </div>
+      </div>
+      <div class="space-bottom"></div>
     </div>
   </div>
 </div>
