@@ -30,17 +30,17 @@
   margin-top: 20px;
 }
 .odd {
-  background: #FFFF99;
+  background: white;
 }
 .even {
-  background: #003300;
+  background: #548271;
 }
 .glyphicon-none:before {
     content: "\2122";
     color: transparent !important;
 }
 .white {
-  color: #fefefe;
+  color: #FFFFE0;
   text-shadow: 2px 2px 2px #555;
 }
 .black {
@@ -95,7 +95,6 @@ b {
   height: 50px;
   background: #e4e4e4;
   box-shadow: -2px 2px #c4c4c4;
-  box-shadow: 2px 2px #c4c4c4;
   text-align: center;
   clear: both;
   padding-top: 7px;
@@ -288,4 +287,26 @@ p {
 }
 body {
   background-color: #e4e4e4;
+}
+.popup-chatbox {
+  height: 45px;
+  position: fixed;
+  bottom: 0px;
+  background: radial-gradient(#558372, #548271);
+  width: 285px;
+  right: 15px;
+  box-shadow: 5px -5px 2px #ccc;
+  p {
+    color: white;
+    float: left;
+    clear: both;
+    margin-top: 10px;
+    letter-spacing: .2px;
+    margin-left: 10px;
+  }
+}
+.glyphicon-plus {
+  margin: 0;
+  margin-top: -1px;
+  float: right;
 }
