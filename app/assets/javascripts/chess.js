@@ -1,5 +1,12 @@
 $(function(){
 
+  // variables for castling //
+  var bKingMoves = 0;
+  var wKingMoves = 0;
+  var wRook1Moves = 0;
+  var wRook2Moves = 0;
+  var bRook1Moves = 0;
+  var bRook2Moves = 0;
   // initialize drag and drop elements with Jquery plugin //
   $('.draggable').draggable({
     snap: ".droppable",
@@ -25,9 +32,6 @@ $(function(){
       var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
       var yAxis = parseInt(startingPoint[5]);
       var xAxis = letterArray.indexOf(letterVar) + 1;
-
-      // resets the x and y axis to their starting positions //
-
 
       // creates the droppable elements for each piece per turn //
        function enableElements(entry) {
@@ -514,7 +518,7 @@ $(function(){
          divArray.forEach(enableElements);
       }
 
-      else if (pieceType.match(/glyphicon-king/)) {
+      else if (pieceType.match(/glyphicon-king white/)) {
         $('.droppable').droppable("disable");
         var yAxis = parseInt(startingPoint[5]);
         var xAxis = letterArray.indexOf(letterVar) + 1;
@@ -529,6 +533,37 @@ $(function(){
         divArray.push(letterArray[xAxis -2] + (yAxis - 1));
         divArray.push(letterArray[xAxis] + (yAxis + 1));
         divArray.push(letterArray[xAxis] + (yAxis - 1));
+
+        if ( wKingMoves === 0 && wRook1Moves === 0 && $('#box-b8').children().length === 0 && $('#box-c8').children().length === 0 && $('#box-d8').children().length === 0) {
+          divArray.push(letterArray[xAxis - 3] + (yAxis));
+        }
+        else if ( wKingMoves === 0 && wRook2Moves === 0 && $('#box-f8').children().length === 0 && $('#box-g8').children().length === 0) {
+          divArray.push(letterArray[xAxis + 1] + (yAxis));
+        }
+        divArray.forEach(enableElements);
+      }
+      else if (pieceType.match(/glyphicon-king black/)) {
+        $('.droppable').droppable("disable");
+        var yAxis = parseInt(startingPoint[5]);
+        var xAxis = letterArray.indexOf(letterVar) + 1;
+        var divArray = [];
+
+        // set +x+y diagonal //
+        divArray.push(letterArray[xAxis -1] + (yAxis + 1));
+        divArray.push(letterArray[xAxis -1] + (yAxis - 1));
+        divArray.push(letterArray[xAxis -2] + (yAxis));
+        divArray.push(letterArray[xAxis] + (yAxis));
+        divArray.push(letterArray[xAxis -2] + (yAxis + 1));
+        divArray.push(letterArray[xAxis -2] + (yAxis - 1));
+        divArray.push(letterArray[xAxis] + (yAxis + 1));
+        divArray.push(letterArray[xAxis] + (yAxis - 1));
+
+        if ( bKingMoves === 0 && bRook1Moves === 0 && $('#box-b1').children().length === 0 && $('#box-c1').children().length === 0 && $('#box-d1').children().length === 0) {
+          divArray.push(letterArray[xAxis - 3] + (yAxis));
+        }
+        else if ( bKingMoves === 0 && bRook2Moves === 0 && $('#box-f1').children().length === 0 && $('#box-g1').children().length === 0) {
+          divArray.push(letterArray[xAxis + 1] + (yAxis));
+        }
 
         divArray.forEach(enableElements);
       }
@@ -555,9 +590,17 @@ $(function(){
       var oldBox = ui.draggable.parent().attr('id');
       var classCheck = stationBox.children().attr('class');
       var trNum = $('tbody').children().length + 1;
+      // increment counters for castling //
+      if (piece.match(/black glyphicon-king/)) { bKingMoves += 1;}
+      if (piece.match(/white glyphicon-king/)) { wKingMoves += 1;}
+      if (piece.match(/b-rook-1/)) { bRook1Moves += 1;}
+      if (piece.match(/b-rook-2/)) { bRook2Moves += 1;}
+      if (piece.match(/w-rook-1/)) { wRook1Moves += 1;}
+      if (piece.match(/w-rook-2/)) { wRook2Moves += 1;}
+
       $('.text-list').append('<tr><th><b>' + trNum + '</b> <div class="pipe">|</div> ' + oldBox.split("-")[1].toUpperCase() + " - " + newBox.split("-")[1].toUpperCase() + '</th></tr>');
 
-
+      // change pawns to queen at end of board //
       if (piece.match(/pawn black/) !== null && newBox.match(/8/)) {
         ui.draggable.removeClass('glyphicon-pawn').addClass('glyphicon-queen');
       }
@@ -574,6 +617,21 @@ $(function(){
 
       // eliminate jquery draggable position changes //
       ui.draggable.detach().appendTo($(this)).css({'top': '0', 'left': '0'});
+
+      // castling moves //
+      if (piece.match(/king black/) && newBox.match(/box-c1/) && oldBox.match(/box-e1/) ) {
+        $('.b-rook-1').detach().appendTo($('#box-d1'));
+      }
+      else if (piece.match(/king black/) && newBox.match(/box-g1/) && oldBox.match(/box-e1/) ) {
+        $('.b-rook-2').detach().appendTo($('#box-f1'));
+      }
+      else if (piece.match(/king white/) && newBox.match(/box-c8/) && oldBox.match(/box-e8/)) {
+        $('.w-rook-1').detach().appendTo($('#box-d8'));
+      }
+      else if (piece.match(/king white/) && newBox.match(/box-g8/) && oldBox.match(/box-e8/)) {
+        $('.w-rook-2').detach().appendTo($('#box-f8'));
+      }
+
 
       var newHome = ui.draggable.parent().attr('id');
 
