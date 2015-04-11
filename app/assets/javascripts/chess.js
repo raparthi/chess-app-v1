@@ -651,6 +651,7 @@ $(function(){
           var tempArray = [];
           var kingPosition = $('.w-king').parent().attr('id');
           var piece = $(this).attr('class');
+          var piecePosition = $(this).parent().attr('id');
           var letterVar = $(this).parent().attr('id')[4];
           var xAxis = letterArray.indexOf(letterVar) + 1;
           var yAxis = parseInt($(this).parent().attr('id')[5]);
@@ -671,6 +672,12 @@ $(function(){
               }
               console.log(tempArray);
               console.log(kingPosition);
+              tempArray.forEach(function(value) { divArray.push(value); });
+              tempArray.forEach(function(value) {
+                if ("box-" + value === kingPosition) {
+                  attackPieces.push([piece, piecePosition]);
+                }
+              })
           }
           else if (piece.match(/glyphicon-knight/)) {
             //check each knight move //
@@ -700,6 +707,13 @@ $(function(){
             }
             console.log(tempArray);
             console.log(kingPosition);
+            tempArray.forEach(function(value) { divArray.push(value); });
+            tempArray.forEach(function(value) {
+              if ("box-" + value === kingPosition) {
+                attackPieces.push([piece, piecePosition]);
+              }
+            })
+
           }
         else if (piece.match(/glyphicon-king/)) {
           if (checkForBlockedColor((xAxis + 1), (yAxis + 1), "black") === 0) {
@@ -728,9 +742,136 @@ $(function(){
           }
           console.log(tempArray);
           console.log(kingPosition);
+          tempArray.forEach(function(value) { divArray.push(value); });
+          tempArray.forEach(function(value) {
+            if ("box-" + value === kingPosition) {
+              attackPieces.push([piece, piecePosition]);
+            }
+          })
+
         }
         else if (piece.match(/glyphicon-tower/)) {
           var newY = yAxis + 1;
+          while (newY <= 8 )  {
+            if (checkForBlockedColor(xAxis, newY, "black") !== 0) { break;};
+            pushToArray(tempArray, xAxis, newY);
+            if (checkForBlockedColor(xAxis, newY, "white") !== 0) { break;};
+            newY += 1;
+          }
+          newY = yAxis - 1;
+          while (newY >= 1) {
+            if (checkForBlockedColor(xAxis, newY, "black") !== 0) { break;};
+            pushToArray(tempArray, xAxis, newY);
+            if (checkForBlockedColor(xAxis, newY, "white") !== 0) { break;};
+            newY -= 1;
+          }
+          var newX = xAxis + 1;
+          while (newX <= 8) {
+            if (checkForBlockedColor(newX, yAxis, "black") !== 0) {break;};
+            pushToArray(tempArray, newX, yAxis);
+            if (checkForBlockedColor(newX, yAxis, "white") !== 0) {break;};
+            newX += 1;
+          }
+          newX = xAxis - 1;
+          while (newX >= 1) {
+            if (checkForBlockedColor(newX, yAxis, "black") !== 0) {break;};
+            pushToArray(tempArray, newX, yAxis);
+            if (checkForBlockedColor(newX, yAxis, "white") !== 0) {break;};
+            newX -= 1;
+          }
+          console.log(tempArray);
+          tempArray.forEach(function(value) { divArray.push(value); });
+          tempArray.forEach(function(value) {
+            if ("box-" + value === kingPosition) {
+              attackPieces.push([piece, piecePosition]);
+            }
+          })
+
+        }
+        else if (piece.match(/glyphicon-bishop/)) {
+          var newY = yAxis + 1;
+          var newX = xAxis + 1
+          while (newY <= 8 && newX <= 8)  {
+            if (checkForBlockedColor(newX, newY, "black") !== 0) { break;};
+            pushToArray(tempArray, newX, newY);
+            if (checkForBlockedColor(newX, newY, "white") !== 0) { break;};
+            newY += 1;
+            newX += 1;
+          }
+          newY = yAxis - 1;
+          newX = xAxis - 1;
+          while (newY >= 1 && newX >= 1) {
+            if (checkForBlockedColor(newX, newY, "black") !== 0) { break;};
+            pushToArray(tempArray, newX, newY);
+            if (checkForBlockedColor(newX, newY, "white") !== 0) { break;};
+            newY -= 1;
+            newX -= 1;
+          }
+          newX = xAxis + 1;
+          newY = yAxis - 1;
+          while (newX <= 8 && newY >= 1) {
+            if (checkForBlockedColor(newX, yAxis, "black") !== 0) {break;};
+            pushToArray(tempArray, newX, yAxis);
+            if (checkForBlockedColor(newX, yAxis, "white") !== 0) {break;};
+            newX += 1;
+            newY -= 1;
+          }
+          newX = xAxis - 1;
+          newY = yAxis + 1;
+          while (newX >= 1 && newY <= 8) {
+            if (checkForBlockedColor(newX, yAxis, "black") !== 0) {break;};
+            pushToArray(tempArray, newX, yAxis);
+            if (checkForBlockedColor(newX, yAxis, "white") !== 0) {break;};
+            newX -= 1;
+            newY += 1;
+          }
+          console.log(tempArray);
+          tempArray.forEach(function(value) { divArray.push(value); });
+          tempArray.forEach(function(value) {
+            if ("box-" + value === kingPosition) {
+              attackPieces.push([piece, piecePosition]);
+            }
+          })
+
+        }
+        else if (piece.match(/glyphicon-queen/)) {
+          var newY = yAxis + 1;
+          var newX = xAxis + 1
+          while (newY <= 8 && newX <= 8)  {
+            if (checkForBlockedColor(newX, newY, "black") !== 0) { break;};
+            pushToArray(tempArray, newX, newY);
+            if (checkForBlockedColor(newX, newY, "white") !== 0) { break;};
+            newY += 1;
+            newX += 1;
+          }
+          newY = yAxis - 1;
+          newX = xAxis - 1;
+          while (newY >= 1 && newX >= 1) {
+            if (checkForBlockedColor(newX, newY, "black") !== 0) { break;};
+            pushToArray(tempArray, newX, newY);
+            if (checkForBlockedColor(newX, newY, "white") !== 0) { break;};
+            newY -= 1;
+            newX -= 1;
+          }
+          newX = xAxis + 1;
+          newY = yAxis - 1;
+          while (newX <= 8 && newX >= 1) {
+            if (checkForBlockedColor(newX, yAxis, "black") !== 0) {break;};
+            pushToArray(tempArray, newX, yAxis);
+            if (checkForBlockedColor(newX, yAxis, "white") !== 0) {break;};
+            newX += 1;
+            newY -= 1;
+          }
+          newX = xAxis - 1;
+          newY = yAxis + 1;
+          while (newX >= 1) {
+            if (checkForBlockedColor(newX, yAxis, "black") !== 0) {break;};
+            pushToArray(tempArray, newX, yAxis);
+            if (checkForBlockedColor(newX, yAxis, "white") !== 0) {break;};
+            newX -= 1;
+            newY += 1;
+          }
+          newY = yAxis + 1;
           while (newY <= 8 )  {
             if (checkForBlockedColor(xAxis, newY, "black") !== 0) { break;};
             pushToArray(tempArray, xAxis, newY);
@@ -759,28 +900,30 @@ $(function(){
             newX -= 1;
           }
           console.log(tempArray);
-
+          tempArray.forEach(function(value) { divArray.push(value); });
+          tempArray.forEach(function(value) {
+            if ("box-" + value === kingPosition) {
+              attackPieces.push([piece, piecePosition]);
+            }
+          });
         }
-        else if (piece.match(/glyphicon-bishop/)) {
-
-        }
-        else if (piece.match(/glyphicon-queen/)) {
-
-        }
 
 
-        })
-        // code for checking black droppable moves //
-        // for each black piece, separate by piece type //
-        // then, use formulas to find possible piece moves //
-        // if piece move equals king position, push piece to array with position and piece type //
-        // if attack array is two long, set draggable element to king only //
-        // if attack array is one long, first set king moves to where not in divArray //
-        // Second, find all droppables for white //
-        // If attack piece is pawn or knight or king, allow only droppables on the attack piece position //
-        // If attack piece is bishop, rook, or queen, find spaces in between king and attack piece //
-        // Then, allow only droppables except those spaces //
-        // Check total droppables with allowable droppables. If none, game over! It's checkmate! //
+      })
+      console.log(divArray);
+      console.log(attackPieces.length);
+      console.log(attackPieces[0]);
+
+        // Psuedocode //
+        // First find droppable elements for piece color and position of opponent king //
+        // Iterate through each piece and if matches king Position, push to attackPieces array, with piece and positoin info //
+        // On draggable, check if attackPieces > 0. If so, disable all boxes //
+        // if attackPieces === 2, enable king moves if are not in opponent divArray
+        // if attackPieces === 1, first enable king moves that are not in opponent divArray //
+        // Then, if attackPiece is knight, king, or pawn, allow other moves that capture attackPiece (same box) //
+        // If attackPiece is bishop, queen, or rook, test boxes in between king and attackPiece, and allow only those pieces or capture moves //
+        // in Droppable, test for array of droppables of check-side, if none, declare game over / checkmate //
+
       }
       else if (piece.match(/black/)) {
         // code for checking white droppable moves //
