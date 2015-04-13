@@ -51,10 +51,6 @@ $(function(){
       var yAxis = parseInt(startingPoint[5]);
       var xAxis = letterArray.indexOf(letterVar) + 1;
 
-      console.log(attackPiecesBlack);
-      console.log(attackPiecesWhite);
-      console.log(cleanArray(blackPosition));
-      console.log(cleanArray(whitePosition));
 
       // creates the droppable elements for each piece per turn //
        function enableElements(entry) {
@@ -78,8 +74,186 @@ $(function(){
          return $('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length;
        };
 
-       // check for check //
+       function testKingMoves(array, location) {
+       for (var i=0; i< array.length; i++) {
+         if (array[i] === location) {
+           return true;
+         }
+       }};
 
+       // check for check //
+       console.log(pieceType);
+       console.log(attackPiecesBlack.length);
+       console.log(attackPiecesBlack);
+       console.log(cleanArray(blackPosition));
+
+       // check for check from two separate pieces; if so, only king can move out of check //
+       if (pieceType.match(/white/) && attackPiecesBlack.length === 2) {
+         $('.droppable').droppable("disable");
+         var yAxis = parseInt(startingPoint[5]);
+         var xAxis = letterArray.indexOf(letterVar) + 1;
+         var divArray = [];
+
+         if (pieceType.match(/w-king/)) {
+           if (!testKingMoves(blackPosition, letterArray[xAxis - 1] + (yAxis + 1))) {
+              divArray.push(letterArray[xAxis - 1] + (yAxis + 1));
+           }
+           if (!testKingMoves(blackPosition, letterArray[xAxis - 1] + (yAxis - 1))) {
+             divArray.push(letterArray[xAxis - 1] + (yAxis - 1));
+           }
+           if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis))) {
+             divArray.push(letterArray[xAxis] + (yAxis ));
+           }
+           if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis))) {
+             divArray.push(letterArray[xAxis - 2] + (yAxis));
+           }
+           if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis + 1))) {
+             divArray.push(letterArray[xAxis] + (yAxis + 1));
+           }
+           if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis - 1))) {
+             divArray.push(letterArray[xAxis] + (yAxis - 1));
+           }
+           if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis + 1))) {
+             divArray.push(letterArray[xAxis - 2] + (yAxis + 1));
+           }
+           if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis - 1))) {
+             divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
+           }
+          }
+          divArray.forEach(enableElements);
+       }
+       else if (pieceType.match(/black/) && attackPiecesWhite.length === 2) {
+         $('.droppable').droppable("disable");
+         var yAxis = parseInt(startingPoint[5]);
+         var xAxis = letterArray.indexOf(letterVar) + 1;
+         var divArray = [];
+
+         if (pieceType.match(/b-king/)) {
+           if (!testKingMoves(whitePosition, letterArray[xAxis - 1] + (yAxis + 1))) {
+              divArray.push(letterArray[xAxis - 1] + (yAxis + 1));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis - 1] + (yAxis - 1))) {
+             divArray.push(letterArray[xAxis - 1] + (yAxis - 1));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis] + (yAxis))) {
+             divArray.push(letterArray[xAxis] + (yAxis ));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis - 2] + (yAxis))) {
+             divArray.push(letterArray[xAxis - 2] + (yAxis));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis] + (yAxis + 1))) {
+             divArray.push(letterArray[xAxis] + (yAxis + 1));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis] + (yAxis - 1))) {
+             divArray.push(letterArray[xAxis] + (yAxis - 1));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis - 2] + (yAxis + 1))) {
+             divArray.push(letterArray[xAxis - 2] + (yAxis + 1));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis - 2] + (yAxis - 1))) {
+             divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
+           }
+          }
+
+          divArray.forEach(enableElements);
+       }
+
+       // check for single piece check //
+       else if (pieceType.match(/white/) && attackPiecesBlack.length === 1) {
+         $('.droppable').droppable("disable");
+         var yAxis = parseInt(startingPoint[5]);
+         var xAxis = letterArray.indexOf(letterVar) + 1;
+         var divArray = [];
+
+         if (pieceType.match(/w-king/)) {
+           console.log(blackPosition);
+           console.log(attackPiecesBlack);
+           var tempLocation = letterArray[xAxis-1] + yAxis.toString();
+           console.log(tempLocation);
+
+
+           if (!testKingMoves(blackPosition, letterArray[xAxis - 1] + (yAxis + 1))) {
+              divArray.push(letterArray[xAxis - 1] + (yAxis + 1));
+           }
+           if (!testKingMoves(blackPosition, letterArray[xAxis - 1] + (yAxis - 1))) {
+             divArray.push(letterArray[xAxis - 1] + (yAxis - 1));
+           }
+           if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis))) {
+             divArray.push(letterArray[xAxis] + (yAxis ));
+           }
+           if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis))) {
+             divArray.push(letterArray[xAxis - 2] + (yAxis));
+           }
+           if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis + 1))) {
+             divArray.push(letterArray[xAxis] + (yAxis + 1));
+           }
+           if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis - 1))) {
+             divArray.push(letterArray[xAxis] + (yAxis - 1));
+           }
+           if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis + 1))) {
+             divArray.push(letterArray[xAxis - 2] + (yAxis + 1));
+           }
+           if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis - 1))) {
+             divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
+           }
+           divArray.forEach(enableElements);
+
+        }
+        else if (pieceType.match(/glyphicon-pawn/) ) {
+
+        }
+        else if (pieceType.match(/glyphicon-knight/)) {
+
+        }
+        else if (pieceType.match(/glyphicon-bishop/)) {
+
+        }
+        else if (pieceType.match(/glyphicon-tower/)) {
+
+        }
+        else if (pieceType.match(/glyphicon-queen/)) {
+
+        }
+      }
+
+
+       else if (pieceType.match(/black/) && attackPiecesWhite.length === 1) {
+         $('.droppable').droppable("disable");
+         var yAxis = parseInt(startingPoint[5]);
+         var xAxis = letterArray.indexOf(letterVar) + 1;
+         var divArray = [];
+
+         if (pieceType.match(/b-king/)) {
+           if (!testKingMoves(whitePosition, letterArray[xAxis - 1] + (yAxis + 1))) {
+              divArray.push(letterArray[xAxis - 1] + (yAxis + 1));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis - 1] + (yAxis - 1))) {
+             divArray.push(letterArray[xAxis - 1] + (yAxis - 1));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis] + (yAxis))) {
+             divArray.push(letterArray[xAxis] + (yAxis ));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis - 2] + (yAxis))) {
+             divArray.push(letterArray[xAxis - 2] + (yAxis));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis] + (yAxis + 1))) {
+             divArray.push(letterArray[xAxis] + (yAxis + 1));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis] + (yAxis - 1))) {
+             divArray.push(letterArray[xAxis] + (yAxis - 1));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis - 2] + (yAxis + 1))) {
+             divArray.push(letterArray[xAxis - 2] + (yAxis + 1));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis - 2] + (yAxis - 1))) {
+             divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
+           }
+           divArray.forEach(enableElements);
+
+          }
+       }
+
+       else {
         // set forward movement for pawns //
         if (pieceType.match(/glyphicon-pawn black/)) {
           $('.droppable').droppable("disable");
@@ -583,7 +757,6 @@ $(function(){
           divArray.push(letterArray[xAxis -2] + (yAxis - 1));
           divArray.push(letterArray[xAxis] + (yAxis + 1));
           divArray.push(letterArray[xAxis] + (yAxis - 1));
-          console.log(divArray);
 
           divArray.forEach(enableElements);
           if ( bKingMoves === 0 && bRook1Moves === 0 && $('#box-b1').children().length === 0 && $('#box-c1').children().length === 0 && $('#box-d1').children().length === 0) {
@@ -594,6 +767,7 @@ $(function(){
           }
           divArray.forEach(enableElements);
         }
+      }
 
       // disable opponent side during turns //
       if (pieceType.match(/white/) !== null) {
