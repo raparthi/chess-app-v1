@@ -11,6 +11,9 @@ $(function(){
     return newArray;
   };
 
+  // to change clock //
+
+
   // variables for castling //
   var bKingMoves = 0;
   var wKingMoves = 0;
@@ -160,97 +163,70 @@ $(function(){
 
        // check for single piece check //
        else if (pieceType.match(/white/) && attackPiecesBlack.length === 1) {
-         $('.droppable').droppable("disable");
-         var yAxis = parseInt(startingPoint[5]);
-         var xAxis = letterArray.indexOf(letterVar) + 1;
-         var divArray = [];
+          console.log($('.w-king').parent().attr('id'));
+          console.log(attackPiecesBlack[0][1]);
+          var kingLocation = $('.w-king').parent().attr('id');
+          var kingXAxis = letterArray.indexOf(kingLocation[4]) + 1;
+          var kingYAxis = kingLocation[5];
+          var attackXAxis = letterArray.indexOf(attackPiecesBlack[0][1][4]) + 1;
+          var attackYAxis = attackPiecesBlack[0][1][5];
+          var divArray = [];
 
-         if (pieceType.match(/w-king/)) {
-           console.log(blackPosition);
-           console.log(attackPiecesBlack);
-           var tempLocation = letterArray[xAxis-1] + yAxis.toString();
-           console.log(tempLocation);
-
-
-           if (!testKingMoves(blackPosition, letterArray[xAxis - 1] + (yAxis + 1))) {
-              divArray.push(letterArray[xAxis - 1] + (yAxis + 1));
-           }
-           if (!testKingMoves(blackPosition, letterArray[xAxis - 1] + (yAxis - 1))) {
-             divArray.push(letterArray[xAxis - 1] + (yAxis - 1));
-           }
-           if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis))) {
-             divArray.push(letterArray[xAxis] + (yAxis ));
-           }
-           if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis))) {
-             divArray.push(letterArray[xAxis - 2] + (yAxis));
-           }
-           if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis + 1))) {
-             divArray.push(letterArray[xAxis] + (yAxis + 1));
-           }
-           if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis - 1))) {
-             divArray.push(letterArray[xAxis] + (yAxis - 1));
-           }
-           if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis + 1))) {
-             divArray.push(letterArray[xAxis - 2] + (yAxis + 1));
-           }
-           if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis - 1))) {
-             divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
-           }
-           divArray.forEach(enableElements);
-
-        }
-        else if (pieceType.match(/glyphicon-pawn/) ) {
-
-        }
-        else if (pieceType.match(/glyphicon-knight/)) {
-
-        }
-        else if (pieceType.match(/glyphicon-bishop/)) {
-
-        }
-        else if (pieceType.match(/glyphicon-tower/)) {
-
-        }
-        else if (pieceType.match(/glyphicon-queen/)) {
-
-        }
-      }
-
-
-       else if (pieceType.match(/black/) && attackPiecesWhite.length === 1) {
-         $('.droppable').droppable("disable");
-         var yAxis = parseInt(startingPoint[5]);
-         var xAxis = letterArray.indexOf(letterVar) + 1;
-         var divArray = [];
-
-         if (pieceType.match(/b-king/)) {
-           if (!testKingMoves(whitePosition, letterArray[xAxis - 1] + (yAxis + 1))) {
-              divArray.push(letterArray[xAxis - 1] + (yAxis + 1));
-           }
-           if (!testKingMoves(whitePosition, letterArray[xAxis - 1] + (yAxis - 1))) {
-             divArray.push(letterArray[xAxis - 1] + (yAxis - 1));
-           }
-           if (!testKingMoves(whitePosition, letterArray[xAxis] + (yAxis))) {
-             divArray.push(letterArray[xAxis] + (yAxis ));
-           }
-           if (!testKingMoves(whitePosition, letterArray[xAxis - 2] + (yAxis))) {
-             divArray.push(letterArray[xAxis - 2] + (yAxis));
-           }
-           if (!testKingMoves(whitePosition, letterArray[xAxis] + (yAxis + 1))) {
-             divArray.push(letterArray[xAxis] + (yAxis + 1));
-           }
-           if (!testKingMoves(whitePosition, letterArray[xAxis] + (yAxis - 1))) {
-             divArray.push(letterArray[xAxis] + (yAxis - 1));
-           }
-           if (!testKingMoves(whitePosition, letterArray[xAxis - 2] + (yAxis + 1))) {
-             divArray.push(letterArray[xAxis - 2] + (yAxis + 1));
-           }
-           if (!testKingMoves(whitePosition, letterArray[xAxis - 2] + (yAxis - 1))) {
-             divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
-           }
-           divArray.forEach(enableElements);
+          if (kingXAxis === attackXAxis && kingYAxis < attackYAxis) {
+            var diff = attackYAxis - kingYAxis;
+            for(var i=1; i<=diff; i++) {
+              divArray.push(letterArray[kingXAxis - 1] + (kingYAxis + i));
+            }
+          }
+          else if (kingXAxis === attackXAxis && kingYAxis > attackYAxis) {
+            var diff = kingYAxis - attackYAxis;
+            for(var i=1; i<=diff; i ++) {
+              divArray.push(letterArray[kingXAxis - 1] + (attackYAxis + i));
+            }
 
           }
+          else if (kingXAxis < attackXAxis && kingYAxis === attackYAxis) {
+            var diff = attackXAxis - kingXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArray.push(letterArray[kingXAxis + i - 1] + attackYAxis);
+            }
+          }
+          else if (kingXAxis > attackXAxis && kingYAxis === attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArray.push(letterArray[attackXAxis + i - 1] + attackYAxis);
+            }
+          }
+          else if (kingXAxis < attackXAxis && kingYAxis < attackYAxis) {
+            var diff = attackXAxis - kingXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArray.push(letterArray[kingXAxis + i -1] + (kingYAxis + i))
+            }
+          }
+          else if (kingXAxis > attackXAxis && kingYAxis < attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArray.push(letterArray[attackXAxis + i -1] + (attackYAxis - i))
+            }
+          }
+          else if (kingXAxis > attackXAxis && kingYAxis > attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArray.push(letterArray[kingXAxis - i -1] + (kingYAxis - i))
+            }
+          }
+          else if (kingXAxis < attackYAxis && kingYAxis > attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArray.push(letterArray[kingXAxis + i -1] + (kingYAxis - i))
+            }
+          }
+          console.log(divArray);
+
+      }
+
+       else if (pieceType.match(/black/) && attackPiecesWhite.length === 1) {
+
        }
 
        else {
@@ -723,15 +699,30 @@ $(function(){
           var xAxis = letterArray.indexOf(letterVar) + 1;
           var divArray = [];
 
-          // set +x+y diagonal //
-          divArray.push(letterArray[xAxis -1] + (yAxis + 1));
-          divArray.push(letterArray[xAxis -1] + (yAxis - 1));
-          divArray.push(letterArray[xAxis -1] + (yAxis - 1));
-          divArray.push(letterArray[xAxis] + (yAxis));
-          divArray.push(letterArray[xAxis -2] + (yAxis + 1));
-          divArray.push(letterArray[xAxis -2] + (yAxis - 1));
-          divArray.push(letterArray[xAxis] + (yAxis + 1));
-          divArray.push(letterArray[xAxis] + (yAxis - 1));
+          if (!testKingMoves(blackPosition, letterArray[xAxis - 1] + (yAxis + 1))) {
+             divArray.push(letterArray[xAxis - 1] + (yAxis + 1));
+          }
+          if (!testKingMoves(blackPosition, letterArray[xAxis - 1] + (yAxis - 1))) {
+            divArray.push(letterArray[xAxis - 1] + (yAxis - 1));
+          }
+          if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis))) {
+            divArray.push(letterArray[xAxis] + (yAxis ));
+          }
+          if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis))) {
+            divArray.push(letterArray[xAxis - 2] + (yAxis));
+          }
+          if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis + 1))) {
+            divArray.push(letterArray[xAxis] + (yAxis + 1));
+          }
+          if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis - 1))) {
+            divArray.push(letterArray[xAxis] + (yAxis - 1));
+          }
+          if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis + 1))) {
+            divArray.push(letterArray[xAxis - 2] + (yAxis + 1));
+          }
+          if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis - 1))) {
+            divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
+          }
 
           divArray.forEach(enableElements);
           if ( wKingMoves === 0 && wRook1Moves === 0 && $('#box-b8').children().length === 0 && $('#box-c8').children().length === 0 && $('#box-d8').children().length === 0) {
@@ -748,15 +739,30 @@ $(function(){
           var xAxis = letterArray.indexOf(letterVar) + 1;
           var divArray = [];
 
-          // set +x+y diagonal //
-          divArray.push(letterArray[xAxis -1] + (yAxis + 1));
-          divArray.push(letterArray[xAxis -1] + (yAxis - 1));
-          divArray.push(letterArray[xAxis -1] + (yAxis - 1));
-          divArray.push(letterArray[xAxis] + (yAxis));
-          divArray.push(letterArray[xAxis -2] + (yAxis + 1));
-          divArray.push(letterArray[xAxis -2] + (yAxis - 1));
-          divArray.push(letterArray[xAxis] + (yAxis + 1));
-          divArray.push(letterArray[xAxis] + (yAxis - 1));
+          if (!testKingMoves(blackPosition, letterArray[xAxis - 1] + (yAxis + 1))) {
+             divArray.push(letterArray[xAxis - 1] + (yAxis + 1));
+          }
+          if (!testKingMoves(blackPosition, letterArray[xAxis - 1] + (yAxis - 1))) {
+            divArray.push(letterArray[xAxis - 1] + (yAxis - 1));
+          }
+          if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis))) {
+            divArray.push(letterArray[xAxis] + (yAxis ));
+          }
+          if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis))) {
+            divArray.push(letterArray[xAxis - 2] + (yAxis));
+          }
+          if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis + 1))) {
+            divArray.push(letterArray[xAxis] + (yAxis + 1));
+          }
+          if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis - 1))) {
+            divArray.push(letterArray[xAxis] + (yAxis - 1));
+          }
+          if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis + 1))) {
+            divArray.push(letterArray[xAxis - 2] + (yAxis + 1));
+          }
+          if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis - 1))) {
+            divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
+          }
 
           divArray.forEach(enableElements);
           if ( bKingMoves === 0 && bRook1Moves === 0 && $('#box-b1').children().length === 0 && $('#box-c1').children().length === 0 && $('#box-d1').children().length === 0) {
@@ -791,6 +797,19 @@ $(function(){
         var oldBox = ui.draggable.parent().attr('id');
         var classCheck = stationBox.children().attr('class');
         var trNum = $('tbody').children().length + 1;
+        switchTurn();
+
+        var piece = ui.draggable.attr('class');
+        if (piece.match(/white/)) {
+          $('#time1').removeClass('turn');
+          $('#time0').addClass('turn');
+        }
+        else if (piece.match(/black/)) {
+          $('#time0').removeClass('turn');
+          $('#time1').addClass('turn');
+        }
+
+
         attackPiecesBlack.length = 0;
         attackPiecesWhite.length = 0;
 
@@ -833,6 +852,7 @@ $(function(){
         //check for Check - complicated //
         // CHECKMATE CODE !!!! //
         var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
+
         if (piece.match(/black/)) {
           var divArray = [];
 
@@ -1393,6 +1413,59 @@ $(function(){
         }
       }
     });
+
+    // set clock //
+    var addedTimePerMove, formatTime, initialTime, intervalId, pad, remainingTime, switchTurn, turn, update;
+    initialTime = 15 * 60;
+    addedTimePerMove = 0;
+    turn = 1;
+    remainingTime = [initialTime, initialTime];
+    pad = function(x) {
+      return ('0' + x).slice(-2);
+    };
+    formatTime = function(t) {
+      var hours, minutes, seconds;
+      seconds = t % 60;
+      minutes = Math.floor(t / 60) % 60;
+      hours = Math.floor(t / 3600);
+      if (hours) {
+        return "" + hours + ":" + (pad(minutes)) + ":" + (pad(seconds));
+      } else {
+        return "" + minutes + ":" + (pad(seconds));
+      }
+    };
+    update = function() {
+      var i;
+      remainingTime[turn]--;
+      for (i = 0; i < 2; i++) {
+        $("#time" + i).text(formatTime(remainingTime[i]));
+      }
+      if (remainingTime[turn] <= 0) {
+        $("#time" + turn).removeClass('turn').addClass('loser');
+        return clearInterval(intervalId);
+      }
+    };
+    switchTurn = function() {
+        $("#time" + turn).removeClass('turn');
+        turn = 1 - turn;
+        $("#time" + turn).addClass('turn');
+        return remainingTime[turn] += addedTimePerMove;
+    };
+
+
+
+    // $('body').mousedown(function(event) {
+    //   switchTurn();
+    //   return false;
+    // });
+    // $('body').keydown(function(event) {
+    //   if (event.keyCode === 32) {
+    //     switchTurn();
+    //     return false;
+    //   }
+    // });
+    $('#time0').addClass('turn');
+    return intervalId = setInterval(update, 1000);
 
 
 });

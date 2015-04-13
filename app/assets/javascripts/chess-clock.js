@@ -3,7 +3,7 @@
     var addedTimePerMove, formatTime, initialTime, intervalId, pad, remainingTime, switchTurn, turn, update;
     initialTime = 15 * 60;
     addedTimePerMove = 0;
-    turn = 0;
+    turn = 1;
     remainingTime = [initialTime, initialTime];
     pad = function(x) {
       return ('0' + x).slice(-2);
@@ -31,13 +31,14 @@
       }
     };
     switchTurn = function() {
-      if (intervalId) {
         $("#time" + turn).removeClass('turn');
         turn = 1 - turn;
         $("#time" + turn).addClass('turn');
         return remainingTime[turn] += addedTimePerMove;
-      }
     };
+
+
+
     // $('body').mousedown(function(event) {
     //   switchTurn();
     //   return false;
