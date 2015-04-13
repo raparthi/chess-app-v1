@@ -11,9 +11,6 @@ $(function(){
     return newArray;
   };
 
-  // to change clock //
-
-
   // variables for castling //
   var bKingMoves = 0;
   var wKingMoves = 0;
@@ -157,76 +154,329 @@ $(function(){
              divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
            }
           }
-
           divArray.forEach(enableElements);
        }
 
-       // check for single piece check //
+       // check for single piece check on white's turn //
        else if (pieceType.match(/white/) && attackPiecesBlack.length === 1) {
           console.log($('.w-king').parent().attr('id'));
           console.log(attackPiecesBlack[0][1]);
+          var attackPieceType = attackPiecesBlack[0][0];
           var kingLocation = $('.w-king').parent().attr('id');
           var kingXAxis = letterArray.indexOf(kingLocation[4]) + 1;
           var kingYAxis = kingLocation[5];
           var attackXAxis = letterArray.indexOf(attackPiecesBlack[0][1][4]) + 1;
           var attackYAxis = attackPiecesBlack[0][1][5];
+          var divArrayCheck = [];
           var divArray = [];
 
           if (kingXAxis === attackXAxis && kingYAxis < attackYAxis) {
             var diff = attackYAxis - kingYAxis;
             for(var i=1; i<=diff; i++) {
-              divArray.push(letterArray[kingXAxis - 1] + (kingYAxis + i));
+              divArrayCheck.push(letterArray[kingXAxis - 1] + (kingYAxis + i));
             }
           }
-          else if (kingXAxis === attackXAxis && kingYAxis > attackYAxis) {
+          if (kingXAxis === attackXAxis && kingYAxis > attackYAxis) {
             var diff = kingYAxis - attackYAxis;
             for(var i=1; i<=diff; i ++) {
-              divArray.push(letterArray[kingXAxis - 1] + (attackYAxis + i));
+              divArrayCheck.push(letterArray[kingXAxis - 1] + (attackYAxis + i));
             }
+          }
+          if (kingXAxis < attackXAxis && kingYAxis === attackYAxis) {
+            var diff = attackXAxis - kingXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[kingXAxis + i - 1] + attackYAxis);
+            }
+          }
+          if (kingXAxis > attackXAxis && kingYAxis === attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[attackXAxis + i - 1] + attackYAxis);
+            }
+          }
+          if (kingXAxis < attackXAxis && kingYAxis < attackYAxis) {
+            var diff = attackXAxis - kingXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[kingXAxis + i -1] + (kingYAxis + i))
+            }
+          }
+          if (kingXAxis > attackXAxis && kingYAxis < attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[attackXAxis + i -1] + (attackYAxis - i))
+            }
+          }
+          if (kingXAxis > attackXAxis && kingYAxis > attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[kingXAxis - i -1] + (kingYAxis - i))
+            }
+          }
+          if (kingXAxis < attackYAxis && kingYAxis > attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[kingXAxis + i -1] + (kingYAxis - i))
+            }
+          }
+          console.log(divArrayCheck);
+
+          if (pieceType.match(/glyphicon-king/)) {
+            $('.droppable').droppable("disable");
+
+            if (!testKingMoves(blackPosition, letterArray[xAxis - 1] + (yAxis + 1))) {
+               divArray.push(letterArray[xAxis - 1] + (yAxis + 1));
+            }
+            if (!testKingMoves(blackPosition, letterArray[xAxis - 1] + (yAxis - 1))) {
+              divArray.push(letterArray[xAxis - 1] + (yAxis - 1));
+            }
+            if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis))) {
+              divArray.push(letterArray[xAxis] + (yAxis ));
+            }
+            if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis))) {
+              divArray.push(letterArray[xAxis - 2] + (yAxis));
+            }
+            if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis + 1))) {
+              divArray.push(letterArray[xAxis] + (yAxis + 1));
+            }
+            if (!testKingMoves(blackPosition, letterArray[xAxis] + (yAxis - 1))) {
+              divArray.push(letterArray[xAxis] + (yAxis - 1));
+            }
+            if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis + 1))) {
+              divArray.push(letterArray[xAxis - 2] + (yAxis + 1));
+            }
+            if (!testKingMoves(blackPosition, letterArray[xAxis - 2] + (yAxis - 1))) {
+              divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
+            }
+           }
+           divArray.forEach(enableElements);
+
+          if (pieceType.match(/glyphicon-pawn/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+            $('.droppable').droppable("disable");
+            var yAxis = parseInt(startingPoint[5]);
+            var xAxis = letterArray.indexOf(letterVar) + 1;
+            var divArray = [];
+            if (checkForBlockingBlack(xAxis, (yAxis -1)) === 0 && testKingMoves(divArrayCheck, letterArray[xAxis] + (yAxis - 1))) {
+              $(this).parent().prev().droppable('enable');
+            }
+            if (yAxis === 7 && checkForBlockingBlack(xAxis, (yAxis -2)) === 0 && testKingMoves(divArrayCheck, letterArray[xAxis] + (yAxis - 2))) {
+              $(this).parent().prev().prev().droppable('enable');
+            }
+            if (checkForBlockingBlack((xAxis + 1), (yAxis - 1)) !== 0 && (xAxis + 1) + "" + (yAxis -1) === attackXAxis + "" + attackYAxis) {
+              pushElementToArray(divArray, (xAxis + 1), (yAxis - 1));
+            }
+            if (checkForBlockingBlack((xAxis - 1), (yAxis - 1)) !== 0 && (xAxis - 1) + "" +  (yAxis -1) === attackXAxis + "" + attackYAxis ) {
+              pushElementToArray(divArray, (xAxis - 1), (yAxis - 1));
+            }
+            divArray.forEach(enableElements);
+          }
+
+          if (pieceType.match(/glyphicon-pawn/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+            $('.droppable').droppable("disable");
+            var yAxis = parseInt(startingPoint[5]);
+            var xAxis = letterArray.indexOf(letterVar) + 1;
+            var divArray = [];
+
+            if (checkForBlockingBlack((xAxis + 1), (yAxis - 1)) !== 0 && (xAxis + 1) + "" + (yAxis -1) === attackXAxis + "" + attackYAxis) {
+              pushElementToArray(divArray, (xAxis + 1), (yAxis - 1));
+            }
+            if (checkForBlockingBlack((xAxis - 1), (yAxis - 1)) !== 0 && (xAxis - 1) + "" +  (yAxis -1) === attackXAxis + "" + attackYAxis ) {
+              pushElementToArray(divArray, (xAxis - 1), (yAxis - 1));
+            }
+            divArray.forEach(enableElements);
+          }
+
+          if (pieceType.match(/glyphicon-tower/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+            $('.droppable').droppable("disable");
+            var yAxis = parseInt(startingPoint[5]);
+            var xAxis = letterArray.indexOf(letterVar) + 1;
+            var divArray = [];
+
+            // set +y vertical //
+             while (yAxis <= 8 ) {
+               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+               pushElementToArray(divArray, xAxis, yAxis);
+               }
+               if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+               yAxis += 1;
+               if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+             }
+             divArray.forEach(enableElements);
+
+             // set -y vertical //
+             yAxis = parseInt(startingPoint[5]);
+             xAxis = letterArray.indexOf(letterVar) + 1;
+             while (yAxis >= 1 ) {
+               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+               pushElementToArray(divArray, xAxis, yAxis);
+               }
+               if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+               yAxis -= 1;
+               if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+             }
+             divArray.forEach(enableElements);
+
+             // set + x horizontal //
+             yAxis = parseInt(startingPoint[5]);
+             xAxis = letterArray.indexOf(letterVar) + 1;
+             while (xAxis <= 8 ) {
+               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+               pushElementToArray(divArray, xAxis, yAxis);
+               }
+               if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+               xAxis += 1;
+               if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+             }
+             divArray.forEach(enableElements);
+
+             // set - x horizontal //
+             yAxis = parseInt(startingPoint[5]);
+             xAxis = letterArray.indexOf(letterVar) + 1;
+             while (xAxis >= 1 ) {
+               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+               pushElementToArray(divArray, xAxis, yAxis);
+               }
+               if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+               xAxis -= 1;
+               if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+             }
+             divArray.forEach(enableElements);
+          }
+
+          if (pieceType.match(/glyphicon-tower/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+            $('.droppable').droppable("disable");
+            var yAxis = parseInt(startingPoint[5]);
+            var xAxis = letterArray.indexOf(letterVar) + 1;
+            var divArray = [];
+
+            // set +y vertical //
+             while (yAxis <= 8 ) {
+               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+               }
+               if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+               yAxis += 1;
+               if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+             }
+             divArray.forEach(enableElements);
+
+             // set -y vertical //
+             yAxis = parseInt(startingPoint[5]);
+             xAxis = letterArray.indexOf(letterVar) + 1;
+             while (yAxis >= 1 ) {
+               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+               }
+               if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+               yAxis -= 1;
+               if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+             }
+             divArray.forEach(enableElements);
+
+             // set + x horizontal //
+             yAxis = parseInt(startingPoint[5]);
+             xAxis = letterArray.indexOf(letterVar) + 1;
+             while (xAxis <= 8 ) {
+               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+               }
+               if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+               xAxis += 1;
+               if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+             }
+             divArray.forEach(enableElements);
+
+             // set - x horizontal //
+             yAxis = parseInt(startingPoint[5]);
+             xAxis = letterArray.indexOf(letterVar) + 1;
+             while (xAxis >= 1 ) {
+               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+               }
+               if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+               xAxis -= 1;
+               if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+             }
+             divArray.forEach(enableElements);
+          }
+          if (pieceType.match(/glyphicon-bishop/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
 
           }
-          else if (kingXAxis < attackXAxis && kingYAxis === attackYAxis) {
-            var diff = attackXAxis - kingXAxis;
-            for(var i=1; i<=diff; i++) {
-              divArray.push(letterArray[kingXAxis + i - 1] + attackYAxis);
-            }
+          if (pieceType.match(/glyphicon-bishop/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+
           }
-          else if (kingXAxis > attackXAxis && kingYAxis === attackYAxis) {
-            var diff = kingXAxis - attackXAxis;
-            for(var i=1; i<=diff; i++) {
-              divArray.push(letterArray[attackXAxis + i - 1] + attackYAxis);
-            }
+          if (pieceType.match(/glyphicon-queen/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+
           }
-          else if (kingXAxis < attackXAxis && kingYAxis < attackYAxis) {
-            var diff = attackXAxis - kingXAxis;
-            for(var i=1; i<=diff; i++) {
-              divArray.push(letterArray[kingXAxis + i -1] + (kingYAxis + i))
-            }
+          if (pieceType.match(/glyphicon-queen/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphiocn-tower/)) {
+
           }
-          else if (kingXAxis > attackXAxis && kingYAxis < attackYAxis) {
-            var diff = kingXAxis - attackXAxis;
-            for(var i=1; i<=diff; i++) {
-              divArray.push(letterArray[attackXAxis + i -1] + (attackYAxis - i))
-            }
+          if (pieceType.match(/glyphicon-knight/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+
           }
-          else if (kingXAxis > attackXAxis && kingYAxis > attackYAxis) {
-            var diff = kingXAxis - attackXAxis;
-            for(var i=1; i<=diff; i++) {
-              divArray.push(letterArray[kingXAxis - i -1] + (kingYAxis - i))
-            }
+          if (pieceType.match(/glyphicon-knight/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+
           }
-          else if (kingXAxis < attackYAxis && kingYAxis > attackYAxis) {
-            var diff = kingXAxis - attackXAxis;
-            for(var i=1; i<=diff; i++) {
-              divArray.push(letterArray[kingXAxis + i -1] + (kingYAxis - i))
-            }
-          }
-          console.log(divArray);
+
 
       }
 
        else if (pieceType.match(/black/) && attackPiecesWhite.length === 1) {
+         var kingLocation = $('.b-king').parent().attr('id');
+         var kingXAxis = letterArray.indexOf(kingLocation[4]) + 1;
+         var kingYAxis = kingLocation[5];
+         var attackXAxis = letterArray.indexOf(attackPiecesWhite[0][1][4]) + 1;
+         var attackYAxis = attackPiecesWhite[0][1][5];
+         var divArrayCheck = [];
 
+         if (kingXAxis === attackXAxis && kingYAxis < attackYAxis) {
+           var diff = attackYAxis - kingYAxis;
+           for(var i=1; i<=diff; i++) {
+             divArrayCheck.push(letterArray[kingXAxis - 1] + (kingYAxis + i));
+           }
+         }
+         else if (kingXAxis === attackXAxis && kingYAxis > attackYAxis) {
+           var diff = kingYAxis - attackYAxis;
+           for(var i=1; i<=diff; i ++) {
+             divArrayCheck.push(letterArray[kingXAxis - 1] + (attackYAxis + i));
+           }
+
+         }
+         else if (kingXAxis < attackXAxis && kingYAxis === attackYAxis) {
+           var diff = attackXAxis - kingXAxis;
+           for(var i=1; i<=diff; i++) {
+             divArrayCheck.push(letterArray[kingXAxis + i - 1] + attackYAxis);
+           }
+         }
+         else if (kingXAxis > attackXAxis && kingYAxis === attackYAxis) {
+           var diff = kingXAxis - attackXAxis;
+           for(var i=1; i<=diff; i++) {
+             divArrayCheck.push(letterArray[attackXAxis + i - 1] + attackYAxis);
+           }
+         }
+         else if (kingXAxis < attackXAxis && kingYAxis < attackYAxis) {
+           var diff = attackXAxis - kingXAxis;
+           for(var i=1; i<=diff; i++) {
+             divArrayCheck.push(letterArray[kingXAxis + i -1] + (kingYAxis + i))
+           }
+         }
+         else if (kingXAxis > attackXAxis && kingYAxis < attackYAxis) {
+           var diff = kingXAxis - attackXAxis;
+           for(var i=1; i<=diff; i++) {
+             divArrayCheck.push(letterArray[attackXAxis + i -1] + (attackYAxis - i))
+           }
+         }
+         else if (kingXAxis > attackXAxis && kingYAxis > attackYAxis) {
+           var diff = kingXAxis - attackXAxis;
+           for(var i=1; i<=diff; i++) {
+             divArrayCheck.push(letterArray[kingXAxis - i -1] + (kingYAxis - i))
+           }
+         }
+         else if (kingXAxis < attackYAxis && kingYAxis > attackYAxis) {
+           var diff = kingXAxis - attackXAxis;
+           for(var i=1; i<=diff; i++) {
+             divArrayCheck.push(letterArray[kingXAxis + i -1] + (kingYAxis - i))
+           }
+         }
        }
 
        else {
@@ -321,6 +571,7 @@ $(function(){
 
         // set movements for white rook //
         else if (pieceType.match(/glyphicon-tower white/)) {
+
           $('.droppable').droppable("disable");
           var yAxis = parseInt(startingPoint[5]);
           var xAxis = letterArray.indexOf(letterVar) + 1;
@@ -785,6 +1036,8 @@ $(function(){
     }
   });
 
+
+  // start with white //
   $('.black').draggable('disable');
 
   // disable opponent pieces when player's turn //
@@ -808,7 +1061,6 @@ $(function(){
           $('#time0').removeClass('turn');
           $('#time1').addClass('turn');
         }
-
 
         attackPiecesBlack.length = 0;
         attackPiecesWhite.length = 0;
@@ -1129,9 +1381,6 @@ $(function(){
           }
         })
           // Psuedocode //
-          // On draggable, check if attackPieces > 0. If so, disable all boxes //
-          // if attackPieces === 2, enable king moves if are not in opponent divArray
-          // if attackPieces === 1, first enable king moves that are not in opponent divArray //
           // Then, if attackPiece is knight, king, or pawn, allow other moves that capture attackPiece (same box) //
           // If attackPiece is bishop, queen, or rook, test boxes in between king and attackPiece, and allow only those pieces or capture moves //
           // in Droppable, test for array of droppables of check-side, if none, declare game over / checkmate //
@@ -1398,8 +1647,6 @@ $(function(){
         });
       }
 
-
-
         var boolTest = $('.white').draggable("option", "disabled");
 
         // toggle turn for white and white //
@@ -1452,20 +1699,7 @@ $(function(){
         return remainingTime[turn] += addedTimePerMove;
     };
 
-
-
-    // $('body').mousedown(function(event) {
-    //   switchTurn();
-    //   return false;
-    // });
-    // $('body').keydown(function(event) {
-    //   if (event.keyCode === 32) {
-    //     switchTurn();
-    //     return false;
-    //   }
-    // });
     $('#time0').addClass('turn');
     return intervalId = setInterval(update, 1000);
-
 
 });
