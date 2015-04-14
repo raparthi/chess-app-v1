@@ -76,7 +76,7 @@ $(function(){
 
        function testKingMoves(array, location) {
        for (var i=0; i< array.length; i++) {
-         if (array[i] === location) {
+         if (array[i] == location) {
            return true;
          }
        }};
@@ -120,6 +120,9 @@ $(function(){
              divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
            }
           }
+          if (divArray.length === 0) {
+            alert('Game Over');
+          }
           divArray.forEach(enableElements);
        }
        else if (pieceType.match(/black/) && attackPiecesWhite.length === 2) {
@@ -153,6 +156,9 @@ $(function(){
            if (!testKingMoves(whitePosition, letterArray[xAxis - 2] + (yAxis - 1))) {
              divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
            }
+          }
+          if (divArray.length === 0) {
+            alert('Game Over');
           }
           divArray.forEach(enableElements);
        }
@@ -217,6 +223,7 @@ $(function(){
             for(var i=1; i<=diff; i++) {
               divArrayCheck.push(letterArray[kingXAxis + i -1] + (kingYAxis - i))
             }
+
           }
           console.log(divArrayCheck);
 
@@ -255,10 +262,11 @@ $(function(){
             var yAxis = parseInt(startingPoint[5]);
             var xAxis = letterArray.indexOf(letterVar) + 1;
             var divArray = [];
-            if (checkForBlockingBlack(xAxis, (yAxis -1)) === 0 && testKingMoves(divArrayCheck, letterArray[xAxis] + (yAxis - 1))) {
+
+            if (checkForBlockingBlack(xAxis, (yAxis -1)) === 0 && testKingMoves(divArrayCheck, letterArray[xAxis -1] + (yAxis - 1))) {
               $(this).parent().prev().droppable('enable');
             }
-            if (yAxis === 7 && checkForBlockingBlack(xAxis, (yAxis -2)) === 0 && testKingMoves(divArrayCheck, letterArray[xAxis] + (yAxis - 2))) {
+            if (yAxis === 7 && checkForBlockingBlack(xAxis, (yAxis -2)) === 0 && testKingMoves(divArrayCheck, letterArray[xAxis - 1] + (yAxis - 2))) {
               $(this).parent().prev().prev().droppable('enable');
             }
             if (checkForBlockingBlack((xAxis + 1), (yAxis - 1)) !== 0 && (xAxis + 1) + "" + (yAxis -1) === attackXAxis + "" + attackYAxis) {
@@ -399,27 +407,394 @@ $(function(){
              divArray.forEach(enableElements);
           }
           if (pieceType.match(/glyphicon-bishop/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+            $('.droppable').droppable("disable");
+            var yAxis = parseInt(startingPoint[5]);
+            var xAxis = letterArray.indexOf(letterVar) + 1;
+            var divArray = [];
+            while (yAxis <= 8 && xAxis <= 8) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+              pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+              yAxis += 1;
+              xAxis += 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (yAxis >= 1 && xAxis >= 1) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              yAxis -= 1;
+              xAxis -= 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (yAxis >= 1 && xAxis <= 8) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0 ) { break; };
+              yAxis -= 1;
+              xAxis += 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0 ) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (yAxis <= 8 && xAxis >= 1) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0 ) { break; };
+              yAxis += 1;
+              xAxis -= 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0 ) { break; };
+            }
+            divArray.forEach(enableElements);
 
           }
           if (pieceType.match(/glyphicon-bishop/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+            $('.droppable').droppable("disable");
+            var yAxis = parseInt(startingPoint[5]);
+            var xAxis = letterArray.indexOf(letterVar) + 1;
+            var divArray = [];
 
+            while (yAxis <= 8 && xAxis <= 8) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              yAxis += 1;
+              xAxis += 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (yAxis >= 1 && xAxis >= 1) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              yAxis -= 1;
+              xAxis -= 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (yAxis >= 1 && xAxis <= 8) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              yAxis -= 1;
+              xAxis += 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while ( yAxis <= 8 && xAxis >= 1) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              yAxis += 1;
+              xAxis -= 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
           }
           if (pieceType.match(/glyphicon-queen/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+            $('.droppable').droppable("disable");
+            var yAxis = parseInt(startingPoint[5]);
+            var xAxis = letterArray.indexOf(letterVar) + 1;
+            var divArray = [];
 
+            while (xAxis <= 8 && yAxis <= 8) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              yAxis += 1;
+              xAxis += 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (xAxis >= 1 && yAxis >= 1) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              yAxis -= 1;
+              xAxis -= 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (xAxis >= 1 && yAxis <= 8) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              xAxis -= 1;
+              yAxis += 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (xAxis <= 8 && yAxis >= 1) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              xAxis += 1;
+              yAxis -= 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (xAxis <= 8) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              xAxis += 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (xAxis >= 1 ) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              xAxis -= 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (yAxis <= 8) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              yAxis += 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (yAxis >= 1) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              yAxis -= 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
           }
           if (pieceType.match(/glyphicon-queen/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphiocn-tower/)) {
+            $('.droppable').droppable("disable");
+            var yAxis = parseInt(startingPoint[5]);
+            var xAxis = letterArray.indexOf(letterVar) + 1;
+            var divArray = [];
+
+            while (xAxis <= 8 && yAxis <= 8) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              yAxis += 1;
+              xAxis += 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (xAxis >= 1 && yAxis >= 1) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              yAxis -= 1;
+              xAxis -= 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (xAxis >= 1 && yAxis <= 8) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              xAxis -= 1;
+              yAxis += 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (xAxis <= 8 && yAxis >= 1) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              xAxis += 1;
+              yAxis -= 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (xAxis <= 8) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              xAxis += 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (xAxis >= 1 ) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              xAxis -= 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (yAxis <= 8) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              yAxis += 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
+
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (yAxis >= 1) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+              yAxis -= 1;
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+            }
+            divArray.forEach(enableElements);
 
           }
           if (pieceType.match(/glyphicon-knight/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+            $('.droppable').droppable("disable");
+            var yAxis = parseInt(startingPoint[5]);
+            var xAxis = letterArray.indexOf(letterVar) + 1;
+            var divArray = [];
 
+            if ((xAxis - 1) + "" + (yAxis - 2) === attackXAxis + "" + attackYAxis) {
+              divArray.push(letterArray[xAxis -2] + (yAxis-2));
+            }
+            if ((xAxis - 1) + "" + (yAxis + 2) === attackXAxis + "" + attackYAxis) {
+              divArray.push(letterArray[xAxis -2] + (yAxis+2));
+            }
+            if ((xAxis - 2) + "" + (yAxis - 1) === attackXAxis + "" + attackYAxis) {
+              divArray.push(letterArray[xAxis -3] + (yAxis-1));
+            }
+            if ((xAxis - 2) + "" + (yAxis + 1) === attackXAxis + "" + attackYAxis) {
+              divArray.push(letterArray[xAxis -3] + (yAxis+1));
+            }
+            if ((xAxis + 1) + "" + (yAxis + 2) === attackXAxis + "" + attackYAxis) {
+              divArray.push(letterArray[xAxis] + (yAxis+2));
+            }
+            if ((xAxis + 1) + "" + (yAxis - 2) === attackXAxis + "" + attackYAxis) {
+              divArray.push(letterArray[xAxis] + (yAxis-2));
+            }
+            if ((xAxis + 2) + "" + (yAxis + 1) === attackXAxis + "" + attackYAxis) {
+              divArray.push(letterArray[xAxis +1] + (yAxis+1));
+            }
+            if ((xAxis + 2) + "" + (yAxis - 1) === attackXAxis + "" + attackYAxis) {
+              divArray.push(letterArray[xAxis +1] + (yAxis-1));
+            }
+            divArray.forEach(enableElements);
           }
           if (pieceType.match(/glyphicon-knight/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+            $('.droppable').droppable("disable");
+            var yAxis = parseInt(startingPoint[5]);
+            var xAxis = letterArray.indexOf(letterVar) + 1;
+            var divArray = [];
 
+            if (testKingMoves(divArrayCheck, letterArray[xAxis - 2] + (yAxis -2) ) ) {
+              divArray.push(letterArray[xAxis -2] + (yAxis-2));
+            }
+            if (testKingMoves(divArrayCheck, letterArray[xAxis - 2] + (yAxis +2) ) ) {
+              divArray.push(letterArray[xAxis -2] + (yAxis+2));
+            }
+            if (testKingMoves(divArrayCheck, letterArray[xAxis - 3] + (yAxis -1) ) ) {
+              divArray.push(letterArray[xAxis -3] + (yAxis-1));
+            }
+            if (testKingMoves(divArrayCheck, letterArray[xAxis - 3] + (yAxis + 1) ) ) {
+              divArray.push(letterArray[xAxis -3] + (yAxis + 1));
+            }
+            if (testKingMoves(divArrayCheck, letterArray[xAxis] + (yAxis +2) ) ) {
+              divArray.push(letterArray[xAxis] + (yAxis + 2));
+            }
+            if (testKingMoves(divArrayCheck, letterArray[xAxis] + (yAxis -2) ) ) {
+              divArray.push(letterArray[xAxis] + (yAxis-2));
+            }
+            if (testKingMoves(divArrayCheck, letterArray[xAxis + 1] + (yAxis +1) ) ) {
+              divArray.push(letterArray[xAxis + 1] + (yAxis + 1));
+            }
+            if (testKingMoves(divArrayCheck, letterArray[xAxis + 1] + (yAxis -1) ) ) {
+              divArray.push(letterArray[xAxis + 1] + (yAxis - 1));
+            }
+            divArray.forEach(enableElements);
           }
-
-
       }
 
+
+// Check for Black Pieces ///
        else if (pieceType.match(/black/) && attackPiecesWhite.length === 1) {
          var kingLocation = $('.b-king').parent().attr('id');
          var kingXAxis = letterArray.indexOf(kingLocation[4]) + 1;
@@ -427,6 +802,7 @@ $(function(){
          var attackXAxis = letterArray.indexOf(attackPiecesWhite[0][1][4]) + 1;
          var attackYAxis = attackPiecesWhite[0][1][5];
          var divArrayCheck = [];
+
 
          if (kingXAxis === attackXAxis && kingYAxis < attackYAxis) {
            var diff = attackYAxis - kingYAxis;
@@ -477,8 +853,581 @@ $(function(){
              divArrayCheck.push(letterArray[kingXAxis + i -1] + (kingYAxis - i))
            }
          }
+
+         if (pieceType.match(/glyphicon-king/)) {
+           $('.droppable').droppable("disable");
+           var yAxis = parseInt(startingPoint[5]);
+           var xAxis = letterArray.indexOf(letterVar) + 1;
+           var divArray = [];
+
+           if (!testKingMoves(whitePosition, letterArray[xAxis - 1] + (yAxis + 1))) {
+              divArray.push(letterArray[xAxis - 1] + (yAxis + 1));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis - 1] + (yAxis - 1))) {
+             divArray.push(letterArray[xAxis - 1] + (yAxis - 1));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis] + (yAxis))) {
+             divArray.push(letterArray[xAxis] + (yAxis ));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis - 2] + (yAxis))) {
+             divArray.push(letterArray[xAxis - 2] + (yAxis));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis] + (yAxis + 1))) {
+             divArray.push(letterArray[xAxis] + (yAxis + 1));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis] + (yAxis - 1))) {
+             divArray.push(letterArray[xAxis] + (yAxis - 1));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis - 2] + (yAxis + 1))) {
+             divArray.push(letterArray[xAxis - 2] + (yAxis + 1));
+           }
+           if (!testKingMoves(whitePosition, letterArray[xAxis - 2] + (yAxis - 1))) {
+             divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
+           }
+           divArray.forEach(enableElements);
+          }
+
+
+         if (pieceType.match(/glyphicon-pawn/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+           $('.droppable').droppable("disable");
+           var yAxis = parseInt(startingPoint[5]);
+           var xAxis = letterArray.indexOf(letterVar) + 1;
+           var divArray = [];
+           if (checkForBlockingWhite(xAxis, (yAxis -1)) === 0 && testKingMoves(divArrayCheck, letterArray[xAxis -1] + (yAxis - 1))) {
+             $(this).parent().next().droppable('enable');
+           }
+           if (yAxis === 7 && checkForBlockingWhite(xAxis, (yAxis -2)) === 0 && testKingMoves(divArrayCheck, letterArray[xAxis - 1] + (yAxis - 2))) {
+             $(this).parent().next().next().droppable('enable');
+           }
+           if (checkForBlockingWhite((xAxis + 1), (yAxis - 1)) !== 0 && (xAxis + 1) + "" + (yAxis -1) === attackXAxis + "" + attackYAxis) {
+             pushElementToArray(divArray, (xAxis + 1), (yAxis - 1));
+           }
+           if (checkForBlockingWhite((xAxis - 1), (yAxis - 1)) !== 0 && (xAxis - 1) + "" +  (yAxis -1) === attackXAxis + "" + attackYAxis ) {
+             pushElementToArray(divArray, (xAxis - 1), (yAxis - 1));
+           }
+           divArray.forEach(enableElements);
+         }
+
+         if (pieceType.match(/glyphicon-pawn/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+           $('.droppable').droppable("disable");
+           var yAxis = parseInt(startingPoint[5]);
+           var xAxis = letterArray.indexOf(letterVar) + 1;
+           var divArray = [];
+
+           if (checkForBlockingWhite((xAxis + 1), (yAxis - 1)) !== 0 && (xAxis + 1) + "" + (yAxis -1) === attackXAxis + "" + attackYAxis) {
+             pushElementToArray(divArray, (xAxis + 1), (yAxis - 1));
+           }
+           if (checkForBlockingWhite((xAxis - 1), (yAxis - 1)) !== 0 && (xAxis - 1) + "" +  (yAxis -1) === attackXAxis + "" + attackYAxis ) {
+             pushElementToArray(divArray, (xAxis - 1), (yAxis - 1));
+           }
+           divArray.forEach(enableElements);
+         }
+
+         if (pieceType.match(/glyphicon-tower/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+           $('.droppable').droppable("disable");
+           var yAxis = parseInt(startingPoint[5]);
+           var xAxis = letterArray.indexOf(letterVar) + 1;
+           var divArray = [];
+
+           // set +y vertical //
+            while (yAxis <= 8 ) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+              pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+              yAxis += 1;
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+            }
+            divArray.forEach(enableElements);
+
+            // set -y vertical //
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (yAxis >= 1 ) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+              pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+              yAxis -= 1;
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+            }
+            divArray.forEach(enableElements);
+
+            // set + x horizontal //
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (xAxis <= 8 ) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+              pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+              xAxis += 1;
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+            }
+            divArray.forEach(enableElements);
+
+            // set - x horizontal //
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (xAxis >= 1 ) {
+              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+              pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+              xAxis -= 1;
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+            }
+            divArray.forEach(enableElements);
+         }
+
+         if (pieceType.match(/glyphicon-tower/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+           $('.droppable').droppable("disable");
+           var yAxis = parseInt(startingPoint[5]);
+           var xAxis = letterArray.indexOf(letterVar) + 1;
+           var divArray = [];
+
+           // set +y vertical //
+            while (yAxis <= 8 ) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+              pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+              yAxis += 1;
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+            }
+            divArray.forEach(enableElements);
+
+            // set -y vertical //
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (yAxis >= 1 ) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+              pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+              yAxis -= 1;
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+            }
+            divArray.forEach(enableElements);
+
+            // set + x horizontal //
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (xAxis <= 8 ) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+              pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+              xAxis += 1;
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+            }
+            divArray.forEach(enableElements);
+
+            // set - x horizontal //
+            yAxis = parseInt(startingPoint[5]);
+            xAxis = letterArray.indexOf(letterVar) + 1;
+            while (xAxis >= 1 ) {
+              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+              pushElementToArray(divArray, xAxis, yAxis);
+              }
+              if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+              xAxis -= 1;
+              if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+            }
+            divArray.forEach(enableElements);
+         }
+         if (pieceType.match(/glyphicon-bishop/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+           $('.droppable').droppable("disable");
+           var yAxis = parseInt(startingPoint[5]);
+           var xAxis = letterArray.indexOf(letterVar) + 1;
+           var divArray = [];
+           while (yAxis <= 8 && xAxis <= 8) {
+             if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+             pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;};
+             yAxis += 1;
+             xAxis += 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break;};
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (yAxis >= 1 && xAxis >= 1) {
+             if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             yAxis -= 1;
+             xAxis -= 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (yAxis >= 1 && xAxis <= 8) {
+             if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0 ) { break; };
+             yAxis -= 1;
+             xAxis += 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0 ) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (yAxis <= 8 && xAxis >= 1) {
+             if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0 ) { break; };
+             yAxis += 1;
+             xAxis -= 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0 ) { break; };
+           }
+           divArray.forEach(enableElements);
+
+         }
+         if (pieceType.match(/glyphicon-bishop/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+           $('.droppable').droppable("disable");
+           var yAxis = parseInt(startingPoint[5]);
+           var xAxis = letterArray.indexOf(letterVar) + 1;
+           var divArray = [];
+
+           while (yAxis <= 8 && xAxis <= 8) {
+             if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             yAxis += 1;
+             xAxis += 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (yAxis >= 1 && xAxis >= 1) {
+             if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             yAxis -= 1;
+             xAxis -= 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (yAxis >= 1 && xAxis <= 8) {
+             if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             yAxis -= 1;
+             xAxis += 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while ( yAxis <= 8 && xAxis >= 1) {
+             if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             yAxis += 1;
+             xAxis -= 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+         }
+         if (pieceType.match(/glyphicon-queen/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+           $('.droppable').droppable("disable");
+           var yAxis = parseInt(startingPoint[5]);
+           var xAxis = letterArray.indexOf(letterVar) + 1;
+           var divArray = [];
+
+           while (xAxis <= 8 && yAxis <= 8) {
+             if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             yAxis += 1;
+             xAxis += 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (xAxis >= 1 && yAxis >= 1) {
+             if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             yAxis -= 1;
+             xAxis -= 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (xAxis >= 1 && yAxis <= 8) {
+             if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             xAxis -= 1;
+             yAxis += 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (xAxis <= 8 && yAxis >= 1) {
+             if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             xAxis += 1;
+             yAxis -= 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (xAxis <= 8) {
+             if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             xAxis += 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (xAxis >= 1 ) {
+             if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             xAxis -= 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (yAxis <= 8) {
+             if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             yAxis += 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (yAxis >= 1) {
+             if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             yAxis -= 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+         }
+         if (pieceType.match(/glyphicon-queen/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphiocn-tower/)) {
+           $('.droppable').droppable("disable");
+           var yAxis = parseInt(startingPoint[5]);
+           var xAxis = letterArray.indexOf(letterVar) + 1;
+           var divArray = [];
+
+           while (xAxis <= 8 && yAxis <= 8) {
+             if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             yAxis += 1;
+             xAxis += 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (xAxis >= 1 && yAxis >= 1) {
+             if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             yAxis -= 1;
+             xAxis -= 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (xAxis >= 1 && yAxis <= 8) {
+             if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             xAxis -= 1;
+             yAxis += 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (xAxis <= 8 && yAxis >= 1) {
+             if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             xAxis += 1;
+             yAxis -= 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (xAxis <= 8) {
+             if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             xAxis += 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (xAxis >= 1 ) {
+             if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             xAxis -= 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (yAxis <= 8) {
+             if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             yAxis += 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+           yAxis = parseInt(startingPoint[5]);
+           xAxis = letterArray.indexOf(letterVar) + 1;
+           while (yAxis >= 1) {
+             if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+               pushElementToArray(divArray, xAxis, yAxis);
+             }
+             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break; };
+             yAxis -= 1;
+             if (checkForBlockingBlack(xAxis, yAxis) !== 0) { break; };
+           }
+           divArray.forEach(enableElements);
+
+         }
+         if (pieceType.match(/glyphicon-knight/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+           $('.droppable').droppable("disable");
+           var yAxis = parseInt(startingPoint[5]);
+           var xAxis = letterArray.indexOf(letterVar) + 1;
+           var divArray = [];
+
+           if ((xAxis - 1) + "" + (yAxis - 2) === attackXAxis + "" + attackYAxis) {
+             divArray.push(letterArray[xAxis -2] + (yAxis-2));
+           }
+           if ((xAxis - 1) + "" + (yAxis + 2) === attackXAxis + "" + attackYAxis) {
+             divArray.push(letterArray[xAxis -2] + (yAxis+2));
+           }
+           if ((xAxis - 2) + "" + (yAxis - 1) === attackXAxis + "" + attackYAxis) {
+             divArray.push(letterArray[xAxis -3] + (yAxis-1));
+           }
+           if ((xAxis - 2) + "" + (yAxis + 1) === attackXAxis + "" + attackYAxis) {
+             divArray.push(letterArray[xAxis -3] + (yAxis+1));
+           }
+           if ((xAxis + 1) + "" + (yAxis + 2) === attackXAxis + "" + attackYAxis) {
+             divArray.push(letterArray[xAxis] + (yAxis+2));
+           }
+           if ((xAxis + 1) + "" + (yAxis - 2) === attackXAxis + "" + attackYAxis) {
+             divArray.push(letterArray[xAxis] + (yAxis-2));
+           }
+           if ((xAxis + 2) + "" + (yAxis + 1) === attackXAxis + "" + attackYAxis) {
+             divArray.push(letterArray[xAxis +1] + (yAxis+1));
+           }
+           if ((xAxis + 2) + "" + (yAxis - 1) === attackXAxis + "" + attackYAxis) {
+             divArray.push(letterArray[xAxis +1] + (yAxis-1));
+           }
+           divArray.forEach(enableElements);
+         }
+         if (pieceType.match(/glyphicon-knight/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+           $('.droppable').droppable("disable");
+           var yAxis = parseInt(startingPoint[5]);
+           var xAxis = letterArray.indexOf(letterVar) + 1;
+           var divArray = [];
+
+           if (testKingMoves(divArrayCheck, letterArray[xAxis - 2] + (yAxis -2) ) ) {
+             divArray.push(letterArray[xAxis -2] + (yAxis-2));
+           }
+           if (testKingMoves(divArrayCheck, letterArray[xAxis - 2] + (yAxis +2) ) ) {
+             divArray.push(letterArray[xAxis -2] + (yAxis+2));
+           }
+           if (testKingMoves(divArrayCheck, letterArray[xAxis - 3] + (yAxis -1) ) ) {
+             divArray.push(letterArray[xAxis -3] + (yAxis-1));
+           }
+           if (testKingMoves(divArrayCheck, letterArray[xAxis - 3] + (yAxis + 1) ) ) {
+             divArray.push(letterArray[xAxis -3] + (yAxis + 1));
+           }
+           if (testKingMoves(divArrayCheck, letterArray[xAxis] + (yAxis +2) ) ) {
+             divArray.push(letterArray[xAxis] + (yAxis + 2));
+           }
+           if (testKingMoves(divArrayCheck, letterArray[xAxis] + (yAxis -2) ) ) {
+             divArray.push(letterArray[xAxis] + (yAxis-2));
+           }
+           if (testKingMoves(divArrayCheck, letterArray[xAxis + 1] + (yAxis +1) ) ) {
+             divArray.push(letterArray[xAxis + 1] + (yAxis + 1));
+           }
+           if (testKingMoves(divArrayCheck, letterArray[xAxis + 1] + (yAxis -1) ) ) {
+             divArray.push(letterArray[xAxis + 1] + (yAxis - 1));
+           }
+           divArray.forEach(enableElements);
+         }
        }
 
+
+
+
+
+       // And under regular circumstances ---- no check //
        else {
         // set forward movement for pawns //
         if (pieceType.match(/glyphicon-pawn black/)) {
