@@ -43,6 +43,8 @@ $(function(){
     },
 
     start: function(event, ui) {
+      console.log(cleanArray(whitePosition));
+      console.log(cleanArray(blackPosition));
       // initialize starting point axis variables //
       var startingPoint = $(this).closest('div').attr('id');
       var startingPosition = $(this).closest('div');
@@ -2260,30 +2262,15 @@ $(function(){
             // save all the knight moves//
             else if (piece.match(/glyphicon-knight/)) {
 
-              if (checkForBlockedColor((xAxis + 1), (yAxis + 2), "black") === 0) {
-                  pushToArray(tempArray, (xAxis + 1), (yAxis + 2));
-              }
-              if (checkForBlockedColor((xAxis + 1), (yAxis - 2), "black") === 0) {
-                  pushToArray(tempArray, (xAxis + 1), (yAxis - 2));
-              }
-              if (checkForBlockedColor((xAxis - 1), (yAxis + 2), "black") === 0) {
-                  pushToArray(tempArray, (xAxis - 1), (yAxis + 2));
-              }
-              if (checkForBlockedColor((xAxis - 1), (yAxis - 2), "black") === 0) {
-                  pushToArray(tempArray, (xAxis - 1), (yAxis - 2));
-              }
-              if (checkForBlockedColor((xAxis + 2), (yAxis + 1), "black") === 0) {
-                  pushToArray(tempArray, (xAxis + 2), (yAxis + 1));
-              }
-              if (checkForBlockedColor((xAxis + 2), (yAxis - 1), "black") === 0) {
-                  pushToArray(tempArray, (xAxis + 2), (yAxis - 1));
-              }
-              if (checkForBlockedColor((xAxis - 2), (yAxis + 1), "black") === 0) {
-                  pushToArray(tempArray, (xAxis - 2), (yAxis + 1));
-              }
-              if (checkForBlockedColor((xAxis - 2), (yAxis - 1), "black") === 0) {
-                  pushToArray(tempArray, (xAxis - 2), (yAxis - 1));
-              }
+              pushToArray(tempArray, (xAxis + 1), (yAxis + 2));
+              pushToArray(tempArray, (xAxis + 1), (yAxis - 2));
+              pushToArray(tempArray, (xAxis - 1), (yAxis + 2));
+              pushToArray(tempArray, (xAxis - 1), (yAxis - 2));
+              pushToArray(tempArray, (xAxis + 2), (yAxis + 1));
+              pushToArray(tempArray, (xAxis + 2), (yAxis - 1));
+              pushToArray(tempArray, (xAxis - 2), (yAxis + 1));
+              pushToArray(tempArray, (xAxis - 2), (yAxis - 1));
+
               tempArray.forEach(function(value) { divArray.push(value); });
               tempArray.forEach(function(value) {
                 if ("box-" + value === kingPosition) {
@@ -2332,31 +2319,29 @@ $(function(){
           else if (piece.match(/glyphicon-tower/)) {
             var newY = yAxis + 1;
             while (newY <= 8 )  {
-              if (checkForBlockedColor(xAxis, newY, "black") !== 0) { break;};
               pushToArray(tempArray, xAxis, newY);
-              if (checkForBlockedColor(xAxis, newY, "white") !== 0) { break;};
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newY += 1;
             }
             newY = yAxis - 1;
             while (newY >= 1) {
-              if (checkForBlockedColor(xAxis, newY, "black") !== 0) { break;};
               pushToArray(tempArray, xAxis, newY);
-              if (checkForBlockedColor(xAxis, newY, "white") !== 0) { break;};
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newY -= 1;
             }
             var newX = xAxis + 1;
             while (newX <= 8) {
-              if (checkForBlockedColor(newX, yAxis, "black") !== 0) {break;};
-              pushToArray(tempArray, newX, yAxis);
-              if (checkForBlockedColor(newX, yAxis, "white") !== 0) {break;};
+              pushToArray(tempArray, xAxis, newY);
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newX += 1;
+              newY = yAxis;
             }
             newX = xAxis - 1;
             while (newX >= 1) {
-              if (checkForBlockedColor(newX, yAxis, "black") !== 0) {break;};
-              pushToArray(tempArray, newX, yAxis);
-              if (checkForBlockedColor(newX, yAxis, "white") !== 0) {break;};
+              pushToArray(tempArray, xAxis, newY);
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newX -= 1;
+              newY = yAxis;
             }
             tempArray.forEach(function(value) { divArray.push(value); });
             tempArray.forEach(function(value) {
@@ -2372,36 +2357,32 @@ $(function(){
             var newY = yAxis + 1;
             var newX = xAxis + 1
             while (newY <= 8 && newX <= 8)  {
-              if (checkForBlockedColor(newX, newY, "black") !== 0) { break;};
-              pushToArray(tempArray, newX, newY);
-              if (checkForBlockedColor(newX, newY, "white") !== 0) { break;};
+              pushToArray(tempArray, xAxis, newY);
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newY += 1;
               newX += 1;
             }
             newY = yAxis - 1;
             newX = xAxis - 1;
             while (newY >= 1 && newX >= 1) {
-              if (checkForBlockedColor(newX, newY, "black") !== 0) { break;};
-              pushToArray(tempArray, newX, newY);
-              if (checkForBlockedColor(newX, newY, "white") !== 0) { break;};
+              pushToArray(tempArray, xAxis, newY);
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newY -= 1;
               newX -= 1;
             }
             newX = xAxis + 1;
             newY = yAxis - 1;
             while (newX <= 8 && newY >= 1) {
-              if (checkForBlockedColor(newX, newY, "black") !== 0) {break;};
-              pushToArray(tempArray, newX, newY);
-              if (checkForBlockedColor(newX, newY, "white") !== 0) {break;};
+              pushToArray(tempArray, xAxis, newY);
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newX += 1;
               newY -= 1;
             }
             newX = xAxis - 1;
             newY = yAxis + 1;
             while (newX >= 1 && newY <= 8) {
-              if (checkForBlockedColor(newX, newY, "black") !== 0) {break;};
-              pushToArray(tempArray, newX, newY);
-              if (checkForBlockedColor(newX, newY, "white") !== 0) {break;};
+              pushToArray(tempArray, xAxis, newY);
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newX -= 1;
               newY += 1;
             }
@@ -2417,69 +2398,62 @@ $(function(){
           // save the queen moves //
           else if (piece.match(/glyphicon-queen/)) {
             var newY = yAxis + 1;
-            var newX = xAxis + 1
+            var newX = xAxis + 1;
             while (newY <= 8 && newX <= 8)  {
-              if (checkForBlockedColor(newX, newY, "black") !== 0) { break;};
               pushToArray(tempArray, newX, newY);
-              if (checkForBlockedColor(newX, newY, "white") !== 0) { break;};
+              if (checkForBlocked(newX, newY) !== 0) { break;};
               newY += 1;
               newX += 1;
             }
             newY = yAxis - 1;
             newX = xAxis - 1;
             while (newY >= 1 && newX >= 1) {
-              if (checkForBlockedColor(newX, newY, "black") !== 0) { break;};
               pushToArray(tempArray, newX, newY);
-              if (checkForBlockedColor(newX, newY, "white") !== 0) { break;};
+              if (checkForBlocked(newX, newY) !== 0) { break;};
               newY -= 1;
               newX -= 1;
             }
             newX = xAxis + 1;
             newY = yAxis - 1;
             while (newX <= 8 && newX >= 1) {
-              if (checkForBlockedColor(newX, newY, "black") !== 0) {break;};
               pushToArray(tempArray, newX, newY);
-              if (checkForBlockedColor(newX, newY, "white") !== 0) {break;};
+              if (checkForBlocked(newX, newY) !== 0) { break;};
               newX += 1;
               newY -= 1;
             }
             newX = xAxis - 1;
             newY = yAxis + 1;
             while (newX >= 1) {
-              if (checkForBlockedColor(newX, newY, "black") !== 0) {break;};
               pushToArray(tempArray, newX, newY);
-              if (checkForBlockedColor(newX, newY, "white") !== 0) {break;};
+              if (checkForBlocked(newX, newY) !== 0) { break;};
               newX -= 1;
               newY += 1;
             }
             newY = yAxis + 1;
             while (newY <= 8 )  {
-              if (checkForBlockedColor(xAxis, newY, "black") !== 0) { break;};
               pushToArray(tempArray, xAxis, newY);
-              if (checkForBlockedColor(xAxis, newY, "white") !== 0) { break;};
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newY += 1;
             }
             newY = yAxis - 1;
             while (newY >= 1) {
-              if (checkForBlockedColor(xAxis, newY, "black") !== 0) { break;};
               pushToArray(tempArray, xAxis, newY);
-              if (checkForBlockedColor(xAxis, newY, "white") !== 0) { break;};
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newY -= 1;
             }
             newX = xAxis + 1;
             while (newX <= 8) {
-              if (checkForBlockedColor(newX, yAxis, "black") !== 0) {break;};
               pushToArray(tempArray, newX, yAxis);
-              if (checkForBlockedColor(newX, yAxis, "white") !== 0) {break;};
+              if (checkForBlocked(newX, yAxis) !== 0) { break;};
               newX += 1;
             }
             newX = xAxis - 1;
             while (newX >= 1) {
-              if (checkForBlockedColor(newX, yAxis, "black") !== 0) {break;};
               pushToArray(tempArray, newX, yAxis);
-              if (checkForBlockedColor(newX, yAxis, "white") !== 0) {break;};
+              if (checkForBlocked(newX, yAxis) !== 0) { break;};
               newX -= 1;
             }
+            console.log(tempArray);
             tempArray.forEach(function(value) { divArray.push(value); });
             blackPosition = divArray;
             tempArray.forEach(function(value) {
@@ -2490,7 +2464,7 @@ $(function(){
             tempArray.length = 0;
           }
         });
-
+        console.log(attackPiecesBlack);
 
         // check for check on white with two attack pieces, if so, only king can move //
         if (attackPiecesBlack.length === 2) {
@@ -2557,6 +2531,7 @@ $(function(){
           console.log(attackYAxis);
           console.log(kingXAxis);
           console.log(kingYAxis);
+          console.log(whitePosition);
 
           // first, like before, check for spaces in between king and attack piece, then save to a new array, divArrayCheck //
           if (kingXAxis === attackXAxis && kingYAxis < attackYAxis) {
@@ -3200,7 +3175,8 @@ $(function(){
             }
           })
           // if no available moves to stop check, mate declared //
-          if (divArray.length === 0) {
+          console.log("Hello");
+          if (divArray.length === 0 ) {
             alert("Game Over");
             window.location = "/";
           }
@@ -3231,10 +3207,10 @@ $(function(){
                 if (checkForBlocked(xAxis, (yAxis - 2)) === 0 && yAxis === 7) {
                   pushToArray(tempArray, xAxis, (yAxis - 2));
                 }
-                if (checkForBlockedColor((xAxis -1), (yAxis - 1), "black") === 1) {
+                if (checkForBlocked((xAxis -1), (yAxis - 1)) === 1) {
                   pushToArray(tempArray, (xAxis - 1), (yAxis - 1));
                 }
-                if (checkForBlockedColor((xAxis + 1), (yAxis - 1), "black") === 1) {
+                if (checkForBlocked((xAxis + 1), (yAxis - 1)) === 1) {
                   pushToArray(tempArray, (xAxis + 1), (yAxis - 1));
                 }
                 tempArray.forEach(function(value) { divArray.push(value); });
@@ -3249,30 +3225,15 @@ $(function(){
             // save all the white knight moves //
             else if (piece.match(/glyphicon-knight/)) {
 
-              if (checkForBlockedColor((xAxis + 1), (yAxis + 2), "white") === 0) {
-                  pushToArray(tempArray, (xAxis + 1), (yAxis + 2));
-              }
-              if (checkForBlockedColor((xAxis + 1), (yAxis - 2), "white") === 0) {
-                  pushToArray(tempArray, (xAxis + 1), (yAxis - 2));
-              }
-              if (checkForBlockedColor((xAxis - 1), (yAxis + 2), "white") === 0) {
-                  pushToArray(tempArray, (xAxis - 1), (yAxis + 2));
-              }
-              if (checkForBlockedColor((xAxis - 1), (yAxis - 2), "white") === 0) {
-                  pushToArray(tempArray, (xAxis - 1), (yAxis - 2));
-              }
-              if (checkForBlockedColor((xAxis + 2), (yAxis + 1), "white") === 0) {
-                  pushToArray(tempArray, (xAxis + 2), (yAxis + 1));
-              }
-              if (checkForBlockedColor((xAxis + 2), (yAxis - 1), "white") === 0) {
-                  pushToArray(tempArray, (xAxis + 2), (yAxis - 1));
-              }
-              if (checkForBlockedColor((xAxis - 2), (yAxis + 1), "white") === 0) {
-                  pushToArray(tempArray, (xAxis - 2), (yAxis + 1));
-              }
-              if (checkForBlockedColor((xAxis - 2), (yAxis - 1), "white") === 0) {
-                  pushToArray(tempArray, (xAxis - 2), (yAxis - 1));
-              }
+              pushToArray(tempArray, (xAxis + 1), (yAxis + 2));
+              pushToArray(tempArray, (xAxis + 1), (yAxis - 2));
+              pushToArray(tempArray, (xAxis - 1), (yAxis + 2));
+              pushToArray(tempArray, (xAxis - 1), (yAxis - 2));
+              pushToArray(tempArray, (xAxis + 2), (yAxis + 1));
+              pushToArray(tempArray, (xAxis + 2), (yAxis - 1));
+              pushToArray(tempArray, (xAxis - 2), (yAxis + 1));
+              pushToArray(tempArray, (xAxis - 2), (yAxis - 1));
+
               tempArray.forEach(function(value) { divArray.push(value); });
               tempArray.forEach(function(value) {
                 if ("box-" + value === kingPosition) {
@@ -3322,30 +3283,26 @@ $(function(){
           else if (piece.match(/glyphicon-tower/)) {
             var newY = yAxis + 1;
             while (newY <= 8 )  {
-              if (checkForBlockedColor(xAxis, newY, "white") !== 0) { break;};
               pushToArray(tempArray, xAxis, newY);
-              if (checkForBlockedColor(xAxis, newY, "black") !== 0) { break;};
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newY += 1;
             }
             newY = yAxis - 1;
             while (newY >= 1) {
-              if (checkForBlockedColor(xAxis, newY, "white") !== 0) { break;};
               pushToArray(tempArray, xAxis, newY);
-              if (checkForBlockedColor(xAxis, newY, "black") !== 0) { break;};
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newY -= 1;
             }
             var newX = xAxis + 1;
             while (newX <= 8) {
-              if (checkForBlockedColor(newX, yAxis, "white") !== 0) {break;};
-              pushToArray(tempArray, newX, yAxis);
-              if (checkForBlockedColor(newX, yAxis, "black") !== 0) {break;};
+              pushToArray(tempArray, xAxis, newY);
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newX += 1;
             }
             newX = xAxis - 1;
             while (newX >= 1) {
-              if (checkForBlockedColor(newX, yAxis, "white") !== 0) {break;};
-              pushToArray(tempArray, newX, yAxis);
-              if (checkForBlockedColor(newX, yAxis, "black") !== 0) {break;};
+              pushToArray(tempArray, xAxis, newY);
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newX -= 1;
             }
             tempArray.forEach(function(value) { divArray.push(value); });
@@ -3409,69 +3366,61 @@ $(function(){
             var newY = yAxis + 1;
             var newX = xAxis + 1
             while (newY <= 8 && newX <= 8)  {
-              if (checkForBlockedColor(newX, newY, "white") !== 0) { break;};
               pushToArray(tempArray, newX, newY);
-              if (checkForBlockedColor(newX, newY, "black") !== 0) { break;};
+              if (checkForBlocked(newX, newY) !== 0) { break;};
               newY += 1;
               newX += 1;
             }
             newY = yAxis - 1;
             newX = xAxis - 1;
             while (newY >= 1 && newX >= 1) {
-              if (checkForBlockedColor(newX, newY, "white") !== 0) { break;};
               pushToArray(tempArray, newX, newY);
-              if (checkForBlockedColor(newX, newY, "black") !== 0) { break;};
+              if (checkForBlocked(newX, newY) !== 0) { break;};
               newY -= 1;
               newX -= 1;
             }
             newX = xAxis + 1;
             newY = yAxis - 1;
             while (newX <= 8 && newX >= 1) {
-              if (checkForBlockedColor(newX, newY, "white") !== 0) {break;};
               pushToArray(tempArray, newX, newY);
-              if (checkForBlockedColor(newX, newY, "black") !== 0) {break;};
+              if (checkForBlocked(newX, newY) !== 0) { break;};
               newX += 1;
               newY -= 1;
             }
             newX = xAxis - 1;
             newY = yAxis + 1;
             while (newX >= 1) {
-              if (checkForBlockedColor(newX, newY, "white") !== 0) {break;};
               pushToArray(tempArray, newX, newY);
-              if (checkForBlockedColor(newX, newY, "black") !== 0) {break;};
+              if (checkForBlocked(newX, newY) !== 0) { break;};
               newX -= 1;
               newY += 1;
             }
             newY = yAxis + 1;
             while (newY <= 8 )  {
-              if (checkForBlockedColor(xAxis, newY, "white") !== 0) { break;};
-              pushToArray(tempArray, xAxis, newY);
-              if (checkForBlockedColor(xAxis, newY, "black") !== 0) { break;};
+              pushToArray(tempArray, newX, newY);
+              if (checkForBlocked(newX, newY) !== 0) { break;};
               newY += 1;
             }
             newY = yAxis - 1;
             while (newY >= 1) {
-              if (checkForBlockedColor(xAxis, newY, "white") !== 0) { break;};
-              pushToArray(tempArray, xAxis, newY);
-              if (checkForBlockedColor(xAxis, newY, "black") !== 0) { break;};
+              pushToArray(tempArray, newX, newY);
+              if (checkForBlocked(newX, newY) !== 0) { break;};
               newY -= 1;
             }
             newX = xAxis + 1;
             while (newX <= 8) {
-              if (checkForBlockedColor(newX, yAxis, "white") !== 0) {break;};
-              pushToArray(tempArray, newX, yAxis);
-              if (checkForBlockedColor(newX, yAxis, "black") !== 0) {break;};
+              pushToArray(tempArray, xAxis, newY);
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newX += 1;
             }
             newX = xAxis - 1;
             while (newX >= 1) {
-              if (checkForBlockedColor(newX, yAxis, "white") !== 0) {break;};
-              pushToArray(tempArray, newX, yAxis);
-              if (checkForBlockedColor(newX, yAxis, "black") !== 0) {break;};
+              pushToArray(tempArray, xAxis, newY);
+              if (checkForBlocked(xAxis, newY) !== 0) { break;};
               newX -= 1;
             }
             tempArray.forEach(function(value) { divArray.push(value); });
-            blackPosition = divArray;
+            whitePosition = divArray;
             tempArray.forEach(function(value) {
               if ("box-" + value === kingPosition) {
                 attackPiecesWhite.push([piece, piecePosition]);
@@ -3532,7 +3481,8 @@ $(function(){
 
         // Now, trickier... Check for check with only one attack piece. Iterate through all black pieces to see if any moves escape check //
         else if (attackPiecesWhite.length === 1) {
-          console.log(attackPiecesBlack);
+          console.log(attackPiecesWhite);
+          console.log(whitePosition);
           var attackPieceType = attackPiecesWhite[0][0];
           var kingLocation = $('.b-king').parent().attr('id');
           var kingXAxis = letterArray.indexOf(kingLocation[4]) + 1;
@@ -4126,7 +4076,8 @@ $(function(){
               }
             }
           });
-          if (divArray.length === 0) {
+
+          if (divArray.length === 0 ) {
             alert("Game Over - White Wins!");
             window.location = "/";
           }
