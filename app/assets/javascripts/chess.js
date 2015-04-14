@@ -18,6 +18,8 @@ $(function(){
   var wRook2Moves = 0;
   var bRook1Moves = 0;
   var bRook2Moves = 0;
+
+  // variables for check //
   var attackPiecesBlack = [];
   var attackPiecesWhite = [];
   var blackPosition = [];
@@ -62,18 +64,19 @@ $(function(){
          array.push(letterArray[xAxis - 1] + yAxis);
        };
 
-       // check for blocking white piece before or after incrementing piece //
+       // check for blocking white piece on space //
        function checkForBlockingWhite(xAxis, yAxis) {
          var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
          return $('.col-md-1').children('div[id*='+ letterArray[xAxis-1] + yAxis+']').children('span[class*=white]').length;
        };
 
-       // check for blocking black piece before or after incrementing piece //
+       // check for blocking black piece on space //
        function checkForBlockingBlack(xAxis, yAxis) {
          var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
          return $('.col-md-1').children('div[id*=' + letterArray[xAxis-1] + yAxis+']').children('span[class*=black]').length;
        };
 
+       // tests whether one move is found in an array of moves //
        function testKingMoves(array, location) {
        for (var i=0; i< array.length; i++) {
          if (array[i] == location) {
@@ -81,13 +84,13 @@ $(function(){
          }
        }};
 
-       // check for check //
-       console.log(pieceType);
-       console.log(attackPiecesBlack.length);
-       console.log(attackPiecesBlack);
-       console.log(cleanArray(blackPosition));
+       // check for check and board position //
+      //  console.log(pieceType);
+      //  console.log(attackPiecesBlack.length);
+      //  console.log(attackPiecesBlack);
+      //  console.log(cleanArray(blackPosition));
 
-       // check for check from two separate pieces; if so, only king can move out of check //
+       // check for check from two separate pieces -  if so, only king can move out of check //
        if (pieceType.match(/white/) && attackPiecesBlack.length === 2) {
          $('.droppable').droppable("disable");
          var yAxis = parseInt(startingPoint[5]);
@@ -95,6 +98,8 @@ $(function(){
          var divArray = [];
 
          if (pieceType.match(/w-king/)) {
+
+           // tests whether king move is targeted, then pushes move to divArray //
            if (!testKingMoves(blackPosition, letterArray[xAxis - 1] + (yAxis + 1))) {
               divArray.push(letterArray[xAxis - 1] + (yAxis + 1));
            }
@@ -120,11 +125,16 @@ $(function(){
              divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
            }
           }
+
+          // if king doesn't have any moves, then game over //
           if (divArray.length === 0) {
             alert('Game Over');
+            window.location = '/';
           }
           divArray.forEach(enableElements);
        }
+
+       // same function for black, if two attack pieces, must move king //
        else if (pieceType.match(/black/) && attackPiecesWhite.length === 2) {
          $('.droppable').droppable("disable");
          var yAxis = parseInt(startingPoint[5]);
@@ -132,6 +142,7 @@ $(function(){
          var divArray = [];
 
          if (pieceType.match(/b-king/)) {
+           // test if king move is in opponent's target, if not, push to array //
            if (!testKingMoves(whitePosition, letterArray[xAxis - 1] + (yAxis + 1))) {
               divArray.push(letterArray[xAxis - 1] + (yAxis + 1));
            }
@@ -157,16 +168,19 @@ $(function(){
              divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
            }
           }
+
+          // if no king moves, game over //
           if (divArray.length === 0) {
             alert('Game Over');
+            window.location = '/';
           }
           divArray.forEach(enableElements);
        }
 
        // check for single piece check on white's turn //
        else if (pieceType.match(/white/) && attackPiecesBlack.length === 1) {
-          console.log($('.w-king').parent().attr('id'));
-          console.log(attackPiecesBlack[0][1]);
+          // console.log($('.w-king').parent().attr('id'));
+          // console.log(attackPiecesBlack[0][1]);
           var attackPieceType = attackPiecesBlack[0][0];
           var kingLocation = $('.w-king').parent().attr('id');
           var kingXAxis = letterArray.indexOf(kingLocation[4]) + 1;
@@ -176,6 +190,7 @@ $(function(){
           var divArrayCheck = [];
           var divArray = [];
 
+          // create a new array, divArrayCheck, that tests for spaces in between attack piece and king //
           if (kingXAxis === attackXAxis && kingYAxis < attackYAxis) {
             var diff = attackYAxis - kingYAxis;
             for(var i=1; i<=diff; i++) {
@@ -225,11 +240,13 @@ $(function(){
             }
 
           }
-          console.log(divArrayCheck);
+          // console.log(divArrayCheck);
 
+          // now check each individual piece for moves in blocking / ending check - the six pieces are king, pawn, bishop, rook, queen, and knight //
           if (pieceType.match(/glyphicon-king/)) {
             $('.droppable').droppable("disable");
 
+            // if king's moves not in black target, push move to divArray //
             if (!testKingMoves(blackPosition, letterArray[xAxis - 1] + (yAxis + 1))) {
                divArray.push(letterArray[xAxis - 1] + (yAxis + 1));
             }
@@ -255,8 +272,9 @@ $(function(){
               divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
             }
            }
-           divArray.forEach(enableElements);
+           divArray.forEach(enableElements);  // enable droppability on saved elements //
 
+           // test if attack piece is bishop, queen, or rook - if so, you can block the check with an in-between space //
           if (pieceType.match(/glyphicon-pawn/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
             $('.droppable').droppable("disable");
             var yAxis = parseInt(startingPoint[5]);
@@ -278,6 +296,7 @@ $(function(){
             divArray.forEach(enableElements);
           }
 
+          // if attack piece is knight or pawn, you can only capture the piece //
           if (pieceType.match(/glyphicon-pawn/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
             $('.droppable').droppable("disable");
             var yAxis = parseInt(startingPoint[5]);
@@ -293,6 +312,7 @@ $(function(){
             divArray.forEach(enableElements);
           }
 
+          // same thing for other pieces - if attack piece is knight or pawn, only capture move is enabled - else, blocking moves enabled as well //
           if (pieceType.match(/glyphicon-tower/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
             $('.droppable').droppable("disable");
             var yAxis = parseInt(startingPoint[5]);
@@ -350,6 +370,7 @@ $(function(){
              divArray.forEach(enableElements);
           }
 
+          // check for blocking moves for check //
           if (pieceType.match(/glyphicon-tower/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
             $('.droppable').droppable("disable");
             var yAxis = parseInt(startingPoint[5]);
@@ -406,11 +427,15 @@ $(function(){
              }
              divArray.forEach(enableElements);
           }
+
+          // checks for capture moves for check //
           if (pieceType.match(/glyphicon-bishop/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
             $('.droppable').droppable("disable");
             var yAxis = parseInt(startingPoint[5]);
             var xAxis = letterArray.indexOf(letterVar) + 1;
             var divArray = [];
+
+            // check x+ y+ axis //
             while (yAxis <= 8 && xAxis <= 8) {
               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
               pushElementToArray(divArray, xAxis, yAxis);
@@ -424,6 +449,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check x- y- axis //
             while (yAxis >= 1 && xAxis >= 1) {
               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -437,6 +464,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check y- x+ axis //
             while (yAxis >= 1 && xAxis <= 8) {
               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -450,6 +479,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check y+ x- axis //
             while (yAxis <= 8 && xAxis >= 1) {
               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -462,12 +493,15 @@ $(function(){
             divArray.forEach(enableElements);
 
           }
+
+          // check for blocking moves for check //
           if (pieceType.match(/glyphicon-bishop/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
             $('.droppable').droppable("disable");
             var yAxis = parseInt(startingPoint[5]);
             var xAxis = letterArray.indexOf(letterVar) + 1;
             var divArray = [];
 
+            // check y+ x+ axis //
             while (yAxis <= 8 && xAxis <= 8) {
               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -481,6 +515,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check y- x- axis //
             while (yAxis >= 1 && xAxis >= 1) {
               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -494,6 +530,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check y- x+ axis //
             while (yAxis >= 1 && xAxis <= 8) {
               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -507,6 +545,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check y+ x- axis //
             while ( yAxis <= 8 && xAxis >= 1) {
               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -518,12 +558,15 @@ $(function(){
             }
             divArray.forEach(enableElements);
           }
+
+          // checks for capture moves for check //
           if (pieceType.match(/glyphicon-queen/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
             $('.droppable').droppable("disable");
             var yAxis = parseInt(startingPoint[5]);
             var xAxis = letterArray.indexOf(letterVar) + 1;
             var divArray = [];
 
+            // check x+ y+ axis //
             while (xAxis <= 8 && yAxis <= 8) {
               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -537,6 +580,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check x- y- axis //
             while (xAxis >= 1 && yAxis >= 1) {
               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -550,6 +595,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check x- y+ axis //
             while (xAxis >= 1 && yAxis <= 8) {
               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -563,6 +610,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check x+ y- axis //
             while (xAxis <= 8 && yAxis >= 1) {
               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -576,6 +625,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check x+ axis //
             while (xAxis <= 8) {
               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -588,6 +639,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check x- axis //
             while (xAxis >= 1 ) {
               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -600,6 +653,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check y+ axis //
             while (yAxis <= 8) {
               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -612,6 +667,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check y- axis //
             while (yAxis >= 1) {
               if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -622,12 +679,15 @@ $(function(){
             }
             divArray.forEach(enableElements);
           }
+
+          // check for queen blocking moves in check //
           if (pieceType.match(/glyphicon-queen/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphiocn-tower/)) {
             $('.droppable').droppable("disable");
             var yAxis = parseInt(startingPoint[5]);
             var xAxis = letterArray.indexOf(letterVar) + 1;
             var divArray = [];
 
+            // check x+ y+ axis //
             while (xAxis <= 8 && yAxis <= 8) {
               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -641,6 +701,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check x- y- axis //
             while (xAxis >= 1 && yAxis >= 1) {
               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -654,6 +716,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check x- y+ axis //
             while (xAxis >= 1 && yAxis <= 8) {
               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -667,6 +731,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check x+ y- axis //
             while (xAxis <= 8 && yAxis >= 1) {
               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -680,6 +746,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check x+ axis //
             while (xAxis <= 8) {
               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -692,6 +760,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check x- axis //
             while (xAxis >= 1 ) {
               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -704,6 +774,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check y+ axis //
             while (yAxis <= 8) {
               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -716,6 +788,8 @@ $(function(){
 
             yAxis = parseInt(startingPoint[5]);
             xAxis = letterArray.indexOf(letterVar) + 1;
+
+            // check y- axis //
             while (yAxis >= 1) {
               if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                 pushElementToArray(divArray, xAxis, yAxis);
@@ -727,6 +801,8 @@ $(function(){
             divArray.forEach(enableElements);
 
           }
+
+          // check knight moves for capture in check //
           if (pieceType.match(/glyphicon-knight/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
             $('.droppable').droppable("disable");
             var yAxis = parseInt(startingPoint[5]);
@@ -759,6 +835,8 @@ $(function(){
             }
             divArray.forEach(enableElements);
           }
+
+          // check knight moves for blocking in check //
           if (pieceType.match(/glyphicon-knight/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
             $('.droppable').droppable("disable");
             var yAxis = parseInt(startingPoint[5]);
@@ -794,7 +872,7 @@ $(function(){
       }
 
 
-// Check for Black Pieces ///
+      // Check for Black Pieces in check  ///
        else if (pieceType.match(/black/) && attackPiecesWhite.length === 1) {
          var kingLocation = $('.b-king').parent().attr('id');
          var kingXAxis = letterArray.indexOf(kingLocation[4]) + 1;
@@ -803,7 +881,7 @@ $(function(){
          var attackYAxis = attackPiecesWhite[0][1][5];
          var divArrayCheck = [];
 
-
+         // find spaces in between king and attack piece, then load to a new array, divArrayCheck //
          if (kingXAxis === attackXAxis && kingYAxis < attackYAxis) {
            var diff = attackYAxis - kingYAxis;
            for(var i=1; i<=diff; i++) {
@@ -854,6 +932,7 @@ $(function(){
            }
          }
 
+         // check piece by piece for moves blocking / ending check //
          if (pieceType.match(/glyphicon-king/)) {
            $('.droppable').droppable("disable");
            var yAxis = parseInt(startingPoint[5]);
@@ -887,7 +966,7 @@ $(function(){
            divArray.forEach(enableElements);
           }
 
-
+          // check pawn's moves for blocking / ending check with capture//
          if (pieceType.match(/glyphicon-pawn/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
            $('.droppable').droppable("disable");
            var yAxis = parseInt(startingPoint[5]);
@@ -908,6 +987,7 @@ $(function(){
            divArray.forEach(enableElements);
          }
 
+         // check pawn's move for blocking check //
          if (pieceType.match(/glyphicon-pawn/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
            $('.droppable').droppable("disable");
            var yAxis = parseInt(startingPoint[5]);
@@ -923,6 +1003,7 @@ $(function(){
            divArray.forEach(enableElements);
          }
 
+         // check rook's moves for ending check with capture //
          if (pieceType.match(/glyphicon-tower/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
            $('.droppable').droppable("disable");
            var yAxis = parseInt(startingPoint[5]);
@@ -980,6 +1061,7 @@ $(function(){
             divArray.forEach(enableElements);
          }
 
+         // check rook's moves for ending check with block //
          if (pieceType.match(/glyphicon-tower/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
            $('.droppable').droppable("disable");
            var yAxis = parseInt(startingPoint[5]);
@@ -1036,11 +1118,15 @@ $(function(){
             }
             divArray.forEach(enableElements);
          }
+
+          // check bishop moves for ending check with capture //
          if (pieceType.match(/glyphicon-bishop/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
            $('.droppable').droppable("disable");
            var yAxis = parseInt(startingPoint[5]);
            var xAxis = letterArray.indexOf(letterVar) + 1;
            var divArray = [];
+
+           // check x+ y+ axis //
            while (yAxis <= 8 && xAxis <= 8) {
              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
              pushElementToArray(divArray, xAxis, yAxis);
@@ -1054,6 +1140,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check y- x- axis //
            while (yAxis >= 1 && xAxis >= 1) {
              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1067,6 +1155,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check y- x+ axis //
            while (yAxis >= 1 && xAxis <= 8) {
              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1080,6 +1170,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check y+ x- axis //
            while (yAxis <= 8 && xAxis >= 1) {
              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1092,12 +1184,15 @@ $(function(){
            divArray.forEach(enableElements);
 
          }
+
+         // check bishop moves for ending check with block //
          if (pieceType.match(/glyphicon-bishop/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
            $('.droppable').droppable("disable");
            var yAxis = parseInt(startingPoint[5]);
            var xAxis = letterArray.indexOf(letterVar) + 1;
            var divArray = [];
 
+           // check y+ x+ axis //
            while (yAxis <= 8 && xAxis <= 8) {
              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1111,6 +1206,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check y- x- axis //
            while (yAxis >= 1 && xAxis >= 1) {
              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1124,6 +1221,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check y- x+ axis //
            while (yAxis >= 1 && xAxis <= 8) {
              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1137,6 +1236,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check y- x+ axis //
            while ( yAxis <= 8 && xAxis >= 1) {
              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1148,12 +1249,15 @@ $(function(){
            }
            divArray.forEach(enableElements);
          }
+
+         // check queen's moves for ending check with capture //
          if (pieceType.match(/glyphicon-queen/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
            $('.droppable').droppable("disable");
            var yAxis = parseInt(startingPoint[5]);
            var xAxis = letterArray.indexOf(letterVar) + 1;
            var divArray = [];
 
+           // check y+ x+ axis //
            while (xAxis <= 8 && yAxis <= 8) {
              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1167,6 +1271,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check y- x- axis //
            while (xAxis >= 1 && yAxis >= 1) {
              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1180,6 +1286,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check x- y+ axis //
            while (xAxis >= 1 && yAxis <= 8) {
              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1193,6 +1301,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check x+ y- axis //
            while (xAxis <= 8 && yAxis >= 1) {
              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1206,6 +1316,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check x+ axis //
            while (xAxis <= 8) {
              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1218,6 +1330,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check x- axis //
            while (xAxis >= 1 ) {
              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1230,6 +1344,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check y+ axis //
            while (yAxis <= 8) {
              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1242,6 +1358,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check y- axis //
            while (yAxis >= 1) {
              if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1252,12 +1370,15 @@ $(function(){
            }
            divArray.forEach(enableElements);
          }
+
+         // check queen's moves for ending check with block //
          if (pieceType.match(/glyphicon-queen/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphiocn-tower/)) {
            $('.droppable').droppable("disable");
            var yAxis = parseInt(startingPoint[5]);
            var xAxis = letterArray.indexOf(letterVar) + 1;
            var divArray = [];
 
+           // check x+ y+ axis //
            while (xAxis <= 8 && yAxis <= 8) {
              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1271,6 +1392,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check x- y- axis //
            while (xAxis >= 1 && yAxis >= 1) {
              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1284,6 +1407,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check x- y+ axis //
            while (xAxis >= 1 && yAxis <= 8) {
              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1297,6 +1422,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check x+ y- axis //
            while (xAxis <= 8 && yAxis >= 1) {
              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1310,6 +1437,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check x+ axis //
            while (xAxis <= 8) {
              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1322,6 +1451,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check x- axis //
            while (xAxis >= 1 ) {
              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1334,6 +1465,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check y+ axis //
            while (yAxis <= 8) {
              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1346,6 +1479,8 @@ $(function(){
 
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
+
+           // check y- axis //
            while (yAxis >= 1) {
              if (testKingMoves(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
                pushElementToArray(divArray, xAxis, yAxis);
@@ -1357,6 +1492,8 @@ $(function(){
            divArray.forEach(enableElements);
 
          }
+
+         // check knight moves for ending check with capture //
          if (pieceType.match(/glyphicon-knight/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
            $('.droppable').droppable("disable");
            var yAxis = parseInt(startingPoint[5]);
@@ -1389,6 +1526,8 @@ $(function(){
            }
            divArray.forEach(enableElements);
          }
+
+         // check knight moves for ending check with block //
          if (pieceType.match(/glyphicon-knight/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
            $('.droppable').droppable("disable");
            var yAxis = parseInt(startingPoint[5]);
@@ -1423,13 +1562,10 @@ $(function(){
          }
        }
 
-
-
-
-
        // And under regular circumstances ---- no check //
        else {
-        // set forward movement for pawns //
+
+        // set forward movement for black pawns //
         if (pieceType.match(/glyphicon-pawn black/)) {
           $('.droppable').droppable("disable");
           var yAxis = parseInt(startingPoint[5]);
@@ -1449,6 +1585,8 @@ $(function(){
           }
           divArray.forEach(enableElements);
         }
+
+        // set movement for white pawns //
         else if (pieceType.match(/glyphicon-pawn white/)) {
           $('.droppable').droppable("disable");
           var yAxis = parseInt(startingPoint[5]);
@@ -1470,12 +1608,14 @@ $(function(){
           divArray.forEach(enableElements);
         }
 
-        // set vertical and horizontal movement for black rook //
+        // set movement for black rooks //
         else if (pieceType.match(/glyphicon-tower black/)) {
           $('.droppable').droppable("disable");
           var yAxis = parseInt(startingPoint[5]);
           var xAxis = letterArray.indexOf(letterVar) + 1;
           var divArray = [];
+
+          // sets +y axis //
            while (yAxis <= 8 ) {
             pushElementToArray(divArray, xAxis, yAxis);
             if (checkForBlockingWhite(xAxis, yAxis) !== 0) { break;}
@@ -1484,7 +1624,7 @@ $(function(){
            }
            divArray.forEach(enableElements);
 
-           // set -y vertical for black rook //
+           // set -y axis //
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
            while (yAxis >= 1 ) {
@@ -1495,7 +1635,7 @@ $(function(){
            }
            divArray.forEach(enableElements);
 
-           // set + x horizontal for black rook //
+           // set + x axis //
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
            while (xAxis <= 8 ) {
@@ -1506,7 +1646,7 @@ $(function(){
            }
            divArray.forEach(enableElements);
 
-           // set - x horizontal for black rook //
+           // set - x axis //
            yAxis = parseInt(startingPoint[5]);
            xAxis = letterArray.indexOf(letterVar) + 1;
            while (xAxis >= 1 ) {
@@ -1893,6 +2033,7 @@ $(function(){
            divArray.forEach(enableElements);
         }
 
+        // set movements for white king, while avoiding check spaces //
         else if (pieceType.match(/glyphicon-king white/)) {
           $('.droppable').droppable("disable");
           var yAxis = parseInt(startingPoint[5]);
@@ -1933,6 +2074,8 @@ $(function(){
           }
           divArray.forEach(enableElements);
         }
+
+        // set movements for black king, while avoiding check spaces //
         else if (pieceType.match(/b-king/)) {
           $('.droppable').droppable("disable");
           var yAxis = parseInt(startingPoint[5]);
@@ -1986,7 +2129,7 @@ $(function(){
   });
 
 
-  // start with white //
+  // start the game with white //
   $('.black').draggable('disable');
 
   // disable opponent pieces when player's turn //
@@ -2002,6 +2145,8 @@ $(function(){
         switchTurn();
 
         var piece = ui.draggable.attr('class');
+
+        // change timer when player's turn is over //
         if (piece.match(/white/)) {
           $('#time1').removeClass('turn');
           $('#time0').addClass('turn');
@@ -2050,13 +2195,14 @@ $(function(){
 
         var newHome = ui.draggable.parent().attr('id');
 
-        //check for Check - complicated //
-        // CHECKMATE CODE !!!! //
+        // Here it is: the checkmate code!!!! After a player's turn, check the opponent player's board if they are in check and calculate their potential moves. If the moves equal 0, then mate!//
+
         var letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
         if (piece.match(/black/)) {
           var divArray = [];
 
+          // these functions are basically copies of the ones used in the draggable closure. I couldn't get those to work, so now we have these ones! //
 
           function checkForBlocked(xAxis, yAxis) {
             return $('.col-md-1').children('div[id*=' + letterArray[xAxis - 1] + yAxis.toString() + ']').children().length;
@@ -2066,11 +2212,18 @@ $(function(){
             return $('.col-md-1').children('div[id*=' + letterArray[xAxis - 1] + yAxis.toString() + ']').children('span[class*=' + color + ']').length;
           }
 
+          function testBlockedKing(array, location) {
+          for (var i=0; i< array.length; i++) {
+            if (array[i] == location) {
+              return true;
+            }
+          }};
+
           function pushToArray(array, xAxis, yAxis) {
             array.push(letterArray[xAxis - 1] + yAxis);
           };
 
-          // function to find all black pieces //
+          // function to find all black pieces and their moves, then save into the blackPosition array //
           $('.black').each(function(i) {
             var tempArray = [];
             var kingPosition = $('.w-king').parent().attr('id');
@@ -2081,7 +2234,7 @@ $(function(){
             var xAxis = letterArray.indexOf(letterVar) + 1;
             var yAxis = parseInt($(this).parent().attr('id')[5]);
 
-
+            // save all the pawn moves//
             if (piece.match(/glyphicon-pawn/)) {
                 // check for each individual move //
                 if (checkForBlocked(xAxis, (yAxis + 1)) === 0) {
@@ -2090,10 +2243,10 @@ $(function(){
                 if (checkForBlocked(xAxis, (yAxis + 2)) === 0 && yAxis === 2) {
                   pushToArray(tempArray, xAxis, (yAxis + 2));
                 }
-                if (checkForBlockedColor((xAxis -1), (yAxis + 1), "white") === 1) {
+                if (checkForBlocked((xAxis -1), (yAxis + 1)) === 1) {
                   pushToArray(tempArray, (xAxis - 1), (yAxis + 1));
                 }
-                if (checkForBlockedColor((xAxis + 1), (yAxis + 1), "white") === 1) {
+                if (checkForBlocked((xAxis + 1), (yAxis + 1)) === 1) {
                   pushToArray(tempArray, (xAxis + 1), (yAxis + 1));
                 }
                 tempArray.forEach(function(value) { divArray.push(value); });
@@ -2104,8 +2257,9 @@ $(function(){
                 })
                 tempArray.length = 0;
             }
+            // save all the knight moves//
             else if (piece.match(/glyphicon-knight/)) {
-              //check each knight move //
+
               if (checkForBlockedColor((xAxis + 1), (yAxis + 2), "black") === 0) {
                   pushToArray(tempArray, (xAxis + 1), (yAxis + 2));
               }
@@ -2139,6 +2293,7 @@ $(function(){
               tempArray.length = 0;
             }
 
+            // save the king --- moves...//
           else if (piece.match(/glyphicon-king/)) {
             if (checkForBlockedColor((xAxis + 1), (yAxis + 1), "black") === 0) {
               pushToArray(tempArray, (xAxis + 1), (yAxis + 1));
@@ -2172,6 +2327,8 @@ $(function(){
             })
             tempArray.length = 0;
           }
+
+          // save the rook moves //
           else if (piece.match(/glyphicon-tower/)) {
             var newY = yAxis + 1;
             while (newY <= 8 )  {
@@ -2209,6 +2366,8 @@ $(function(){
             })
             tempArray.length = 0;
           }
+
+          // save the bishop moves //
           else if (piece.match(/glyphicon-bishop/)) {
             var newY = yAxis + 1;
             var newX = xAxis + 1
@@ -2254,6 +2413,8 @@ $(function(){
             })
             tempArray.length = 0;
           }
+
+          // save the queen moves //
           else if (piece.match(/glyphicon-queen/)) {
             var newY = yAxis + 1;
             var newX = xAxis + 1
@@ -2327,10 +2488,725 @@ $(function(){
               }
             });
             tempArray.length = 0;
-
-            /// code here for checking white's moves. If no moves, declare checkmate ///
           }
-        })
+        });
+
+
+        // check for check on white with two attack pieces, if so, only king can move //
+        if (attackPiecesBlack.length === 2) {
+          console.log("2 attack pieces");
+          $('.white').each(function(i) {
+            var tempArray = [];
+            var kingPosition = $('.b-king').parent().attr('id');
+            var piece = $(this).attr('class');
+            var piecePosition = $(this).parent().attr('id');
+            var letterVar = $(this).parent().attr('id')[4];
+            var xAxis = letterArray.indexOf(letterVar) + 1;
+            var yAxis = parseInt($(this).parent().attr('id')[5]);
+
+            if (piece.match(/glyphicon-king/)) {
+              if (checkForBlockedColor((xAxis + 1), (yAxis + 1), "white") === 0 && !testBlockedKing(blackPosition, letterArray[xAxis] + (yAxis+1))) {
+                pushToArray(tempArray, (xAxis + 1), (yAxis + 1));
+              }
+              if (checkForBlockedColor((xAxis - 1), (yAxis - 1), "white") === 0 && !testBlockedKing(blackPosition, letterArray[xAxis - 2] + (yAxis - 1))) {
+                pushToArray(tempArray, (xAxis - 1), (yAxis - 1));
+              }
+              if (checkForBlockedColor((xAxis + 1), (yAxis - 1), "white") === 0 && !testBlockedKing(blackPosition, letterArray[xAxis] + (yAxis - 1))) {
+                pushToArray(tempArray, (xAxis + 1), (yAxis - 1));
+              }
+              if (checkForBlockedColor((xAxis - 1), (yAxis + 1), "white") === 0 && !testBlockedKing(blackPosition, letterArray[xAxis - 2] + (yAxis + 1))) {
+                pushToArray(tempArray, (xAxis - 1), (yAxis + 1));
+              }
+              if (checkForBlockedColor((xAxis), (yAxis + 1), "white") === 0 && !testBlockedKing(blackPosition, letterArray[xAxis - 1] + (yAxis + 1))) {
+                pushToArray(tempArray, (xAxis), (yAxis + 1));
+              }
+              if (checkForBlockedColor((xAxis), (yAxis - 1), "white") === 0 && !testBlockedKing(blackPosition, letterArray[xAxis - 1] + (yAxis - 1))) {
+                pushToArray(tempArray, (xAxis), (yAxis - 1));
+              }
+              if (checkForBlockedColor((xAxis + 1), (yAxis), "white") === 0 && !testBlockedKing(blackPosition, letterArray[xAxis] + (yAxis))) {
+                pushToArray(tempArray, (xAxis + 1), (yAxis));
+              }
+              if (checkForBlockedColor((xAxis - 1), (yAxis), "white") === 0 && !testBlockedKing(blackPosition, letterArray[xAxis - 2] + (yAxis))) {
+                pushToArray(tempArray, (xAxis - 1), (yAxis));
+              }
+
+              // if no legal moves, then black wins //
+              if (tempArray.length === 0) {
+                alert("Game Over! Black Wins from two attack pieces");
+
+                window.location = '/';
+              }
+            }
+          });
+        }
+
+        // check moves in check with only one attack piece - more complicated //
+        else if (attackPiecesBlack.length === 1) {
+
+          var tempArray = [];
+          var attackPieceType = attackPiecesBlack[0][0];
+          var kingLocation = $('.w-king').parent().attr('id');
+          var kingXAxis = letterArray.indexOf(kingLocation[4]) + 1;
+          var kingYAxis = kingLocation[5];
+          var attackXAxis = letterArray.indexOf(attackPiecesBlack[0][1][4]) + 1;
+          var attackYAxis = attackPiecesBlack[0][1][5];
+          var divArrayCheck = [];
+          var divArray = [];
+
+          console.log(attackXAxis);
+          console.log(attackYAxis);
+          console.log(kingXAxis);
+          console.log(kingYAxis);
+
+          // first, like before, check for spaces in between king and attack piece, then save to a new array, divArrayCheck //
+          if (kingXAxis === attackXAxis && kingYAxis < attackYAxis) {
+            var diff = attackYAxis - kingYAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[kingXAxis - 1] + (kingYAxis + i));
+            }
+          }
+          if (kingXAxis === attackXAxis && kingYAxis > attackYAxis) {
+            var diff = kingYAxis - attackYAxis;
+            for(var i=1; i<=diff; i ++) {
+              divArrayCheck.push(letterArray[kingXAxis - 1] + (attackYAxis + i));
+            }
+          }
+          if (kingXAxis < attackXAxis && kingYAxis === attackYAxis) {
+            var diff = attackXAxis - kingXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[kingXAxis + i - 1] + attackYAxis);
+            }
+          }
+          if (kingXAxis > attackXAxis && kingYAxis === attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[attackXAxis + i - 1] + attackYAxis);
+            }
+          }
+          if (kingXAxis < attackXAxis && kingYAxis < attackYAxis) {
+            var diff = attackXAxis - kingXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[kingXAxis + i -1] + (kingYAxis + i))
+            }
+          }
+          if (kingXAxis > attackXAxis && kingYAxis < attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[attackXAxis + i -1] + (attackYAxis - i))
+            }
+          }
+          if (kingXAxis > attackXAxis && kingYAxis > attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[kingXAxis - i -1] + (kingYAxis - i))
+            }
+          }
+          if (kingXAxis < attackYAxis && kingYAxis > attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[kingXAxis + i -1] + (kingYAxis - i))
+            }
+          }
+          console.log(divArrayCheck);
+
+
+          // then, iterate through all the white pieces and check if they can either capture or block to stop check //
+
+          $('.white').each(function(i) {
+            var piece = $(this).attr('class');
+            var piecePosition = $(this).parent().attr('id');
+            var startingPoint = $(this).parent().attr('id');
+            var letterVar = $(this).parent().attr('id')[4];
+            var xAxis = letterArray.indexOf(letterVar) + 1;
+            var yAxis = parseInt($(this).parent().attr('id')[5]);
+
+            // first check the king moves //
+            if (piece.match(/glyphicon-king/)) {
+
+              if (!testBlockedKing(blackPosition, letterArray[xAxis - 1] + (yAxis + 1))) {
+                 divArray.push(letterArray[xAxis - 1] + (yAxis + 1));
+              }
+              if (!testBlockedKing(blackPosition, letterArray[xAxis - 1] + (yAxis - 1))) {
+                divArray.push(letterArray[xAxis - 1] + (yAxis - 1));
+              }
+              if (!testBlockedKing(blackPosition, letterArray[xAxis] + (yAxis))) {
+                divArray.push(letterArray[xAxis] + (yAxis ));
+              }
+              if (!testBlockedKing(blackPosition, letterArray[xAxis - 2] + (yAxis))) {
+                divArray.push(letterArray[xAxis - 2] + (yAxis));
+              }
+              if (!testBlockedKing(blackPosition, letterArray[xAxis] + (yAxis + 1))) {
+                divArray.push(letterArray[xAxis] + (yAxis + 1));
+              }
+              if (!testBlockedKing(blackPosition, letterArray[xAxis] + (yAxis - 1))) {
+                divArray.push(letterArray[xAxis] + (yAxis - 1));
+              }
+              if (!testBlockedKing(blackPosition, letterArray[xAxis - 2] + (yAxis + 1))) {
+                divArray.push(letterArray[xAxis - 2] + (yAxis + 1));
+              }
+              if (!testBlockedKing(blackPosition, letterArray[xAxis - 2] + (yAxis - 1))) {
+                divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
+              }
+             }
+
+             // then the pawn moves to block //
+            if (piece.match(/glyphicon-pawn/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              if (checkForBlockedColor(xAxis, (yAxis -1), "black") === 0 && testBlockedKing(divArrayCheck, letterArray[xAxis -1] + (yAxis - 1))) {
+                pushToArray(divArray, xAxis, (yAxis - 1));
+              }
+              if (yAxis === 7 && checkForBlockedColor(xAxis, (yAxis -2), "black") === 0 && testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + (yAxis - 2))) {
+                pushToArray(divArray, xAxis, (yAxis - 2));
+              }
+              if (checkForBlockedColor((xAxis + 1), (yAxis - 1), "black") !== 0 && (xAxis + 1) + "" + (yAxis -1) === attackXAxis + "" + attackYAxis) {
+                pushToArray(divArray, (xAxis + 1), (yAxis - 1));
+              }
+              if (checkForBlockedColor((xAxis - 1), (yAxis - 1), "black") !== 0 && (xAxis - 1) + "" +  (yAxis -1) === attackXAxis + "" + attackYAxis ) {
+                pushToArray(divArray, (xAxis - 1), (yAxis - 1));
+              }
+            }
+            // and the pawn moves to capture //
+            if (piece.match(/glyphicon-pawn/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              if (checkForBlockedColor((xAxis + 1), (yAxis - 1), "black") !== 0 && (xAxis + 1) + "" + (yAxis -1) === attackXAxis + "" + attackYAxis) {
+                pushToArray(divArray, (xAxis + 1), (yAxis - 1));
+              }
+              if (checkForBlockedColor((xAxis - 1), (yAxis - 1), "black") !== 0 && (xAxis - 1) + "" +  (yAxis -1) === attackXAxis + "" + attackYAxis ) {
+                pushToArray(divArray, (xAxis - 1), (yAxis - 1));
+              }
+              divArray.forEach(enableElements);
+            }
+            // check rook moves to capture //
+            if (piece.match(/glyphicon-tower/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // set +y vertical //
+               while (yAxis <= 8 ) {
+                 if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+                 yAxis += 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+               }
+
+               // set -y vertical //
+               yAxis = parseInt(startingPoint[5]);
+               xAxis = letterArray.indexOf(letterVar) + 1;
+               while (yAxis >= 1 ) {
+                 if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+                 yAxis -= 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+               }
+
+               // set + x horizontal //
+               yAxis = parseInt(startingPoint[5]);
+               xAxis = letterArray.indexOf(letterVar) + 1;
+               while (xAxis <= 8 ) {
+                 if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+                 xAxis += 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+               }
+
+               // set - x horizontal //
+               yAxis = parseInt(startingPoint[5]);
+               xAxis = letterArray.indexOf(letterVar) + 1;
+               while (xAxis >= 1 ) {
+                 if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+                 xAxis -= 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+               }
+            }
+            // check rook moves to block //
+            if (piece.match(/glyphicon-tower/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // set +y vertical //
+               while (yAxis <= 8 ) {
+                 if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+                 yAxis += 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+               }
+
+               // set -y vertical //
+               yAxis = parseInt(startingPoint[5]);
+               xAxis = letterArray.indexOf(letterVar) + 1;
+               while (yAxis >= 1 ) {
+                 if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+                 yAxis -= 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+               }
+
+               // set + x horizontal //
+               yAxis = parseInt(startingPoint[5]);
+               xAxis = letterArray.indexOf(letterVar) + 1;
+               while (xAxis <= 8 ) {
+                 if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+                 xAxis += 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+               }
+
+               // set - x horizontal //
+               yAxis = parseInt(startingPoint[5]);
+               xAxis = letterArray.indexOf(letterVar) + 1;
+               while (xAxis >= 1 ) {
+                 if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+                 xAxis -= 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+               }
+            }
+
+            // check bishop moves to capture //
+            if (piece.match(/glyphicon-bishop/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check y+ x+ axis //
+              while (yAxis <= 8 && xAxis <= 8) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+                yAxis += 1;
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check y- x- axis //
+              while (yAxis >= 1 && xAxis >= 1) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                yAxis -= 1;
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check y- x+ axis //
+              while (yAxis >= 1 && xAxis <= 8) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0 ) { break; };
+                yAxis -= 1;
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0 ) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check y+ x- axis //
+              while (yAxis <= 8 && xAxis >= 1) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0 ) { break; };
+                yAxis += 1;
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0 ) { break; };
+              }
+            }
+
+            // check bishop for blocking moves to stop check //
+            if (piece.match(/glyphicon-bishop/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check y+ x+ axis //
+              while (yAxis <= 8 && xAxis <= 8) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                yAxis += 1;
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check y- x- axis //
+              while (yAxis >= 1 && xAxis >= 1) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                yAxis -= 1;
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check y- x+ axis //
+              while (yAxis >= 1 && xAxis <= 8) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                yAxis -= 1;
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check y+ x- axis //
+              while ( yAxis <= 8 && xAxis >= 1) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                yAxis += 1;
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+            }
+
+            // check queen moves to capture to stop check //
+            if (piece.match(/glyphicon-queen/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check x+ y+ axis //
+              while (xAxis <= 8 && yAxis <= 8) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                yAxis += 1;
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check x- y- axis //
+              while (xAxis >= 1 && yAxis >= 1) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                yAxis -= 1;
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check x- y+ axis //
+              while (xAxis >= 1 && yAxis <= 8) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                xAxis -= 1;
+                yAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check x+ y- axis //
+              while (xAxis <= 8 && yAxis >= 1) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                xAxis += 1;
+                yAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check x+ axis //
+              while (xAxis <= 8) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check x- axis //
+              while (xAxis >= 1 ) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check y+ axis //
+              while (yAxis <= 8) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                yAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check y- axis //
+              while (yAxis >= 1) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                yAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+            }
+
+            // check queen moves to stop check by blocking //
+            if (piece.match(/glyphicon-queen/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphiocn-tower/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check x+ y+ axis //
+              while (xAxis <= 8 && yAxis <= 8) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                yAxis += 1;
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check x- y- axis //
+              while (xAxis >= 1 && yAxis >= 1) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                yAxis -= 1;
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check x- y+ axis //
+              while (xAxis >= 1 && yAxis <= 8) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                xAxis -= 1;
+                yAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check x+ y- axis //
+              while (xAxis <= 8 && yAxis >= 1) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                xAxis += 1;
+                yAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check x+ axis //
+              while (xAxis <= 8) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check x- axis //
+              while (xAxis >= 1 ) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check y+ axis //
+              while (yAxis <= 8) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                yAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // check y- axis //
+              while (yAxis >= 1) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+                yAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+              }
+            }
+
+            // check knight moves to stop check by capture //
+            if (piece.match(/glyphicon-knight/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              if ((xAxis - 1) + "" + (yAxis - 2) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis -2] + (yAxis-2));
+              }
+              if ((xAxis - 1) + "" + (yAxis + 2) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis -2] + (yAxis+2));
+              }
+              if ((xAxis - 2) + "" + (yAxis - 1) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis -3] + (yAxis-1));
+              }
+              if ((xAxis - 2) + "" + (yAxis + 1) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis -3] + (yAxis+1));
+              }
+              if ((xAxis + 1) + "" + (yAxis + 2) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis] + (yAxis+2));
+              }
+              if ((xAxis + 1) + "" + (yAxis - 2) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis] + (yAxis-2));
+              }
+              if ((xAxis + 2) + "" + (yAxis + 1) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis +1] + (yAxis+1));
+              }
+              if ((xAxis + 2) + "" + (yAxis - 1) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis +1] + (yAxis-1));
+              }
+            }
+
+            // check knight moves to stop check by blocking //
+            if (piece.match(/glyphicon-knight/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis - 2] + (yAxis -2) ) ) {
+                divArray.push(letterArray[xAxis -2] + (yAxis-2));
+              }
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis - 2] + (yAxis +2) ) ) {
+                divArray.push(letterArray[xAxis -2] + (yAxis+2));
+              }
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis - 3] + (yAxis -1) ) ) {
+                divArray.push(letterArray[xAxis -3] + (yAxis-1));
+              }
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis - 3] + (yAxis + 1) ) ) {
+                divArray.push(letterArray[xAxis -3] + (yAxis + 1));
+              }
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis] + (yAxis +2) ) ) {
+                divArray.push(letterArray[xAxis] + (yAxis + 2));
+              }
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis] + (yAxis -2) ) ) {
+                divArray.push(letterArray[xAxis] + (yAxis-2));
+              }
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis + 1] + (yAxis +1) ) ) {
+                divArray.push(letterArray[xAxis + 1] + (yAxis + 1));
+              }
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis + 1] + (yAxis -1) ) ) {
+                divArray.push(letterArray[xAxis + 1] + (yAxis - 1));
+              }
+            }
+          })
+          // if no available moves to stop check, mate declared //
+          if (divArray.length === 0) {
+            alert("Game Over");
+            window.location = "/";
+          }
+        }
+
+        /// next is the same thing as above, but for white. I would refactor the two of them together if I knew how :) ///
 
         }
         else if (piece.match(/white/)) {
@@ -2341,10 +3217,12 @@ $(function(){
             var kingPosition = $('.b-king').parent().attr('id');
             var piece = $(this).attr('class');
             var piecePosition = $(this).parent().attr('id');
+            var startingPoint = $(this).parent().attr('id');
             var letterVar = $(this).parent().attr('id')[4];
             var xAxis = letterArray.indexOf(letterVar) + 1;
             var yAxis = parseInt($(this).parent().attr('id')[5]);
 
+            // iterate through each white piece, and collect available moves to whitePosition array //
             if (piece.match(/glyphicon-pawn/)) {
                 // check for each individual move //
                 if (checkForBlocked(xAxis, (yAxis - 1)) === 0) {
@@ -2367,8 +3245,10 @@ $(function(){
                 })
                 tempArray.length = 0;
             }
+
+            // save all the white knight moves //
             else if (piece.match(/glyphicon-knight/)) {
-              //check each knight move //
+
               if (checkForBlockedColor((xAxis + 1), (yAxis + 2), "white") === 0) {
                   pushToArray(tempArray, (xAxis + 1), (yAxis + 2));
               }
@@ -2402,6 +3282,8 @@ $(function(){
               tempArray.length = 0;
 
             }
+
+            // save all the white king moves //
           else if (piece.match(/glyphicon-king/)) {
             if (checkForBlockedColor((xAxis + 1), (yAxis + 1), "white") === 0) {
               pushToArray(tempArray, (xAxis + 1), (yAxis + 1));
@@ -2435,6 +3317,8 @@ $(function(){
             })
             tempArray.length = 0;
           }
+
+          // save all the white rook moves //
           else if (piece.match(/glyphicon-tower/)) {
             var newY = yAxis + 1;
             while (newY <= 8 )  {
@@ -2472,6 +3356,8 @@ $(function(){
             })
             tempArray.length = 0;
           }
+
+          // save all the white bishop moves //
           else if (piece.match(/glyphicon-bishop/)) {
             var newY = yAxis + 1;
             var newX = xAxis + 1
@@ -2517,6 +3403,8 @@ $(function(){
             })
             tempArray.length = 0;
           }
+
+          // save all the white queen moves //
           else if (piece.match(/glyphicon-queen/)) {
             var newY = yAxis + 1;
             var newX = xAxis + 1
@@ -2590,10 +3478,659 @@ $(function(){
               }
             });
             tempArray.length = 0;
-
-            // here check for black's moves. If none, declare checkmate /// 
           }
         });
+
+        //  Now again, the check mate code. It's very long and redundant, but it's what we got right now. First check for check with two attack pieces ///
+        if (attackPiecesWhite.length === 2) {
+          var tempArray = [];
+
+          $('.black').each(function(i) {
+            var kingPosition = $('.b-king').parent().attr('id');
+            var piece = $(this).attr('class');
+            var piecePosition = $(this).parent().attr('id');
+            var letterVar = $(this).parent().attr('id')[4];
+            var xAxis = letterArray.indexOf(letterVar) + 1;
+            var yAxis = parseInt($(this).parent().attr('id')[5]);
+
+            // check if king can escape the check. If not, declare mate //
+            if (piece.match(/glyphicon-king/)) {
+              if (checkForBlockedColor((xAxis + 1), (yAxis + 1), "black") === 0 && !testBlockedKing(whitePosition, letterArray[xAxis] + (yAxis+1))) {
+                pushToArray(tempArray, (xAxis + 1), (yAxis + 1));
+              }
+              if (checkForBlockedColor((xAxis - 1), (yAxis - 1), "black") === 0 && !testBlockedKing(whitePosition, letterArray[xAxis - 2] + (yAxis - 1))) {
+                pushToArray(tempArray, (xAxis - 1), (yAxis - 1));
+              }
+              if (checkForBlockedColor((xAxis + 1), (yAxis - 1), "black") === 0 && !testBlockedKing(whitePosition, letterArray[xAxis] + (yAxis - 1))) {
+                pushToArray(tempArray, (xAxis + 1), (yAxis - 1));
+              }
+              if (checkForBlockedColor((xAxis - 1), (yAxis + 1), "black") === 0 && !testBlockedKing(whitePosition, letterArray[xAxis - 2] + (yAxis + 1))) {
+                pushToArray(tempArray, (xAxis - 1), (yAxis + 1));
+              }
+              if (checkForBlockedColor((xAxis), (yAxis + 1), "black") === 0 && !testBlockedKing(whitePosition, letterArray[xAxis - 1] + (yAxis + 1))) {
+                pushToArray(tempArray, (xAxis), (yAxis + 1));
+              }
+              if (checkForBlockedColor((xAxis), (yAxis - 1), "black") === 0 && !testBlockedKing(whitePosition, letterArray[xAxis - 1] + (yAxis - 1))) {
+                pushToArray(tempArray, (xAxis), (yAxis - 1));
+              }
+              if (checkForBlockedColor((xAxis + 1), (yAxis), "black") === 0 && !testBlockedKing(whitePosition, letterArray[xAxis] + (yAxis))) {
+                pushToArray(tempArray, (xAxis + 1), (yAxis));
+              }
+              if (checkForBlockedColor((xAxis - 1), (yAxis), "black") === 0 && !testBlockedKing(whitePosition, letterArray[xAxis - 2] + (yAxis))) {
+                pushToArray(tempArray, (xAxis - 1), (yAxis));
+              }
+
+            }
+          });
+          if (tempArray.length === 0) {
+            alert("Game Over! White Wins!");
+            window.location = '/';
+
+          }
+          tempArray.length = 0;
+        }
+
+        // Now, trickier... Check for check with only one attack piece. Iterate through all black pieces to see if any moves escape check //
+        else if (attackPiecesWhite.length === 1) {
+          console.log(attackPiecesBlack);
+          var attackPieceType = attackPiecesWhite[0][0];
+          var kingLocation = $('.b-king').parent().attr('id');
+          var kingXAxis = letterArray.indexOf(kingLocation[4]) + 1;
+          var kingYAxis = kingLocation[5];
+          var attackXAxis = letterArray.indexOf(attackPiecesWhite[0][1][4]) + 1;
+          var attackYAxis = attackPiecesWhite[0][1][5];
+          var divArrayCheck = [];
+          var divArray = [];
+
+          // first find spaces in between attack piece and the black king, and save to divArrayCheck //
+          if (kingXAxis === attackXAxis && kingYAxis < attackYAxis) {
+            var diff = attackYAxis - kingYAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[kingXAxis - 1] + (kingYAxis + i));
+            }
+          }
+          if (kingXAxis === attackXAxis && kingYAxis > attackYAxis) {
+            var diff = kingYAxis - attackYAxis;
+            for(var i=1; i<=diff; i ++) {
+              divArrayCheck.push(letterArray[kingXAxis - 1] + (attackYAxis + i));
+            }
+          }
+          if (kingXAxis < attackXAxis && kingYAxis === attackYAxis) {
+            var diff = attackXAxis - kingXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[kingXAxis + i - 1] + attackYAxis);
+            }
+          }
+          if (kingXAxis > attackXAxis && kingYAxis === attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[attackXAxis + i - 1] + attackYAxis);
+            }
+          }
+          if (kingXAxis < attackXAxis && kingYAxis < attackYAxis) {
+            var diff = attackXAxis - kingXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[kingXAxis + i -1] + (kingYAxis + i))
+            }
+          }
+          if (kingXAxis > attackXAxis && kingYAxis < attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[attackXAxis + i -1] + (attackYAxis - i))
+            }
+          }
+          if (kingXAxis > attackXAxis && kingYAxis > attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[kingXAxis - i -1] + (kingYAxis - i))
+            }
+          }
+          if (kingXAxis < attackYAxis && kingYAxis > attackYAxis) {
+            var diff = kingXAxis - attackXAxis;
+            for(var i=1; i<=diff; i++) {
+              divArrayCheck.push(letterArray[kingXAxis + i -1] + (kingYAxis - i))
+            }
+          }
+          console.log(divArrayCheck);
+
+          // Next, iterate through all black pieces and test moves to see if they escape check. If they do, save to the divArray //
+          $('.black').each(function(i) {
+            var piece = $(this).attr('class');
+            var piecePosition = $(this).parent().attr('id');
+            var startingPoint = $(this).parent().attr('id');
+            var letterVar = $(this).parent().attr('id')[4];
+            var xAxis = letterArray.indexOf(letterVar) + 1;
+            var yAxis = parseInt($(this).parent().attr('id')[5]);
+
+            // check the black king's moves //
+            if (piece.match(/glyphicon-king/)) {
+
+              if (!testBlockedKing(whitePosition, letterArray[xAxis - 1] + (yAxis + 1))) {
+                 divArray.push(letterArray[xAxis - 1] + (yAxis + 1));
+              }
+              if (!testBlockedKing(whitePosition, letterArray[xAxis - 1] + (yAxis - 1))) {
+                divArray.push(letterArray[xAxis - 1] + (yAxis - 1));
+              }
+              if (!testBlockedKing(whitePosition, letterArray[xAxis] + (yAxis))) {
+                divArray.push(letterArray[xAxis] + (yAxis ));
+              }
+              if (!testBlockedKing(whitePosition, letterArray[xAxis - 2] + (yAxis))) {
+                divArray.push(letterArray[xAxis - 2] + (yAxis));
+              }
+              if (!testBlockedKing(whitePosition, letterArray[xAxis] + (yAxis + 1))) {
+                divArray.push(letterArray[xAxis] + (yAxis + 1));
+              }
+              if (!testBlockedKing(whitePosition, letterArray[xAxis] + (yAxis - 1))) {
+                divArray.push(letterArray[xAxis] + (yAxis - 1));
+              }
+              if (!testBlockedKing(whitePosition, letterArray[xAxis - 2] + (yAxis + 1))) {
+                divArray.push(letterArray[xAxis - 2] + (yAxis + 1));
+              }
+              if (!testBlockedKing(whitePosition, letterArray[xAxis - 2] + (yAxis - 1))) {
+                divArray.push(letterArray[xAxis - 2] + (yAxis - 1));
+              }
+             }
+
+             // check the black pawn's moves to block check //
+            if (piece.match(/glyphicon-pawn/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              if (checkForBlockedColor(xAxis, (yAxis +1), "white") === 0 && testBlockedKing(divArrayCheck, letterArray[xAxis -1] + (yAxis + 1))) {
+                pushToArray(divArray, xAxis, (yAxis + 1));
+              }
+              if (yAxis === 7 && checkForBlockedColor(xAxis, (yAxis +2), "white") === 0 && testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + (yAxis + 2))) {
+                pushToArray(divArray, xAxis, (yAxis + 2));
+              }
+              if (checkForBlockedColor((xAxis + 1), (yAxis + 1), "white") !== 0 && (xAxis + 1) + "" + (yAxis +1) === attackXAxis + "" + attackYAxis) {
+                pushToArray(divArray, (xAxis + 1), (yAxis + 1));
+              }
+              if (checkForBlockedColor((xAxis - 1), (yAxis + 1), "white") !== 0 && (xAxis - 1) + "" +  (yAxis +1) === attackXAxis + "" + attackYAxis ) {
+                pushToArray(divArray, (xAxis - 1), (yAxis + 1));
+              }
+            }
+
+            // check the black pawn's moves to escape check by capture //
+            if (piece.match(/glyphicon-pawn/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              if (checkForBlockedColor((xAxis + 1), (yAxis + 1), "white") !== 0 && (xAxis + 1) + "" + (yAxis +1) === attackXAxis + "" + attackYAxis) {
+                pushToArray(divArray, (xAxis + 1), (yAxis + 1));
+              }
+              if (checkForBlockedColor((xAxis - 1), (yAxis + 1), "white") !== 0 && (xAxis - 1) + "" +  (yAxis +1) === attackXAxis + "" + attackYAxis ) {
+                pushToArray(divArray, (xAxis - 1), (yAxis + 1));
+              }
+            }
+
+            // check the rook's moves to escape check with capture //
+            if (piece.match(/glyphicon-tower/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // set +y vertical //
+               while (yAxis <= 8 ) {
+                 if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+                 yAxis += 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+               }
+
+               // set -y vertical //
+               yAxis = parseInt(startingPoint[5]);
+               xAxis = letterArray.indexOf(letterVar) + 1;
+               while (yAxis >= 1 ) {
+                 if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+                 yAxis -= 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+               }
+
+               // set + x horizontal //
+               yAxis = parseInt(startingPoint[5]);
+               xAxis = letterArray.indexOf(letterVar) + 1;
+               while (xAxis <= 8 ) {
+                 if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+                 xAxis += 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+               }
+
+               // set - x horizontal //
+               yAxis = parseInt(startingPoint[5]);
+               xAxis = letterArray.indexOf(letterVar) + 1;
+               while (xAxis >= 1 ) {
+                 if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+                 xAxis -= 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+               }
+            }
+
+            // check the rook's moves to escape check by blocking //
+            if (piece.match(/glyphicon-tower/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              // set +y vertical //
+               while (yAxis <= 8 ) {
+                 if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+                 yAxis += 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+               }
+
+               // set -y vertical //
+               yAxis = parseInt(startingPoint[5]);
+               xAxis = letterArray.indexOf(letterVar) + 1;
+               while (yAxis >= 1 ) {
+                 if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+                 yAxis -= 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+               }
+
+               // set + x horizontal //
+               yAxis = parseInt(startingPoint[5]);
+               xAxis = letterArray.indexOf(letterVar) + 1;
+               while (xAxis <= 8 ) {
+                 if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+                 xAxis += 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+               }
+
+               // set - x horizontal //
+               yAxis = parseInt(startingPoint[5]);
+               xAxis = letterArray.indexOf(letterVar) + 1;
+               while (xAxis >= 1 ) {
+                 if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                 pushToArray(divArray, xAxis, yAxis);
+                 }
+                 if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+                 xAxis -= 1;
+                 if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+               }
+            }
+
+            // check the black bishop's moves to escape check by capture //
+            if (piece.match(/glyphicon-bishop/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+              while (yAxis <= 8 && xAxis <= 8) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break;};
+                yAxis += 1;
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break;};
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (yAxis >= 1 && xAxis >= 1) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                yAxis -= 1;
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (yAxis >= 1 && xAxis <= 8) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0 ) { break; };
+                yAxis -= 1;
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0 ) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (yAxis <= 8 && xAxis >= 1) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0 ) { break; };
+                yAxis += 1;
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0 ) { break; };
+              }
+            }
+
+            // check the black bishop's moves to escape check by blocking//
+            if (piece.match(/glyphicon-bishop/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              while (yAxis <= 8 && xAxis <= 8) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                yAxis += 1;
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (yAxis >= 1 && xAxis >= 1) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                yAxis -= 1;
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (yAxis >= 1 && xAxis <= 8) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                yAxis -= 1;
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while ( yAxis <= 8 && xAxis >= 1) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                yAxis += 1;
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+            }
+
+            // check queen's moves to escape by capture //
+            if (piece.match(/glyphicon-queen/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              while (xAxis <= 8 && yAxis <= 8) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                yAxis += 1;
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (xAxis >= 1 && yAxis >= 1) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                yAxis -= 1;
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (xAxis >= 1 && yAxis <= 8) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                xAxis -= 1;
+                yAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (xAxis <= 8 && yAxis >= 1) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                xAxis += 1;
+                yAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (xAxis <= 8) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (xAxis >= 1 ) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (yAxis <= 8) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                yAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (yAxis >= 1) {
+                if (xAxis + "" + yAxis === attackXAxis + "" + attackYAxis) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                yAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+            }
+
+            // check queen's moves to escape by blocking //
+            if (piece.match(/glyphicon-queen/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphiocn-tower/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              while (xAxis <= 8 && yAxis <= 8) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                yAxis += 1;
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (xAxis >= 1 && yAxis >= 1) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                yAxis -= 1;
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (xAxis >= 1 && yAxis <= 8) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                xAxis -= 1;
+                yAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (xAxis <= 8 && yAxis >= 1) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                xAxis += 1;
+                yAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (xAxis <= 8) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                xAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (xAxis >= 1 ) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                xAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (yAxis <= 8) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                yAxis += 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+
+              yAxis = parseInt(startingPoint[5]);
+              xAxis = letterArray.indexOf(letterVar) + 1;
+              while (yAxis >= 1) {
+                if (testBlockedKing(divArrayCheck, letterArray[xAxis - 1] + yAxis)) {
+                  pushToArray(divArray, xAxis, yAxis);
+                }
+                if (checkForBlockedColor(xAxis, yAxis, "white") !== 0) { break; };
+                yAxis -= 1;
+                if (checkForBlockedColor(xAxis, yAxis, "black") !== 0) { break; };
+              }
+            }
+
+            // check knight moves to escape check by capture //
+            if (piece.match(/glyphicon-knight/) && attackPieceType.match(/glyphicon-knight | glyphicon-pawn/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              if ((xAxis - 1) + "" + (yAxis - 2) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis -2] + (yAxis-2));
+              }
+              if ((xAxis - 1) + "" + (yAxis + 2) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis -2] + (yAxis+2));
+              }
+              if ((xAxis - 2) + "" + (yAxis - 1) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis -3] + (yAxis-1));
+              }
+              if ((xAxis - 2) + "" + (yAxis + 1) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis -3] + (yAxis+1));
+              }
+              if ((xAxis + 1) + "" + (yAxis + 2) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis] + (yAxis+2));
+              }
+              if ((xAxis + 1) + "" + (yAxis - 2) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis] + (yAxis-2));
+              }
+              if ((xAxis + 2) + "" + (yAxis + 1) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis +1] + (yAxis+1));
+              }
+              if ((xAxis + 2) + "" + (yAxis - 1) === attackXAxis + "" + attackYAxis) {
+                divArray.push(letterArray[xAxis +1] + (yAxis-1));
+              }
+            }
+
+            // check knight moves to escape by blocking //
+            if (piece.match(/glyphicon-knight/) && attackPieceType.match(/glyphicon-queen | glyphicon-bishop | glyphicon-tower/)) {
+              var yAxis = parseInt(startingPoint[5]);
+              var xAxis = letterArray.indexOf(letterVar) + 1;
+
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis - 2] + (yAxis -2) ) ) {
+                divArray.push(letterArray[xAxis -2] + (yAxis-2));
+              }
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis - 2] + (yAxis +2) ) ) {
+                divArray.push(letterArray[xAxis -2] + (yAxis+2));
+              }
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis - 3] + (yAxis -1) ) ) {
+                divArray.push(letterArray[xAxis -3] + (yAxis-1));
+              }
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis - 3] + (yAxis + 1) ) ) {
+                divArray.push(letterArray[xAxis -3] + (yAxis + 1));
+              }
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis] + (yAxis +2) ) ) {
+                divArray.push(letterArray[xAxis] + (yAxis + 2));
+              }
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis] + (yAxis -2) ) ) {
+                divArray.push(letterArray[xAxis] + (yAxis-2));
+              }
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis + 1] + (yAxis +1) ) ) {
+                divArray.push(letterArray[xAxis + 1] + (yAxis + 1));
+              }
+              if (testBlockedKing(divArrayCheck, letterArray[xAxis + 1] + (yAxis -1) ) ) {
+                divArray.push(letterArray[xAxis + 1] + (yAxis - 1));
+              }
+            }
+          });
+          if (divArray.length === 0) {
+            alert("Game Over - White Wins!");
+            window.location = "/";
+          }
+        }
       }
 
         var boolTest = $('.white').draggable("option", "disabled");
@@ -2639,6 +4176,7 @@ $(function(){
       if (remainingTime[turn] <= 0) {
         $("#time" + turn).removeClass('turn').addClass('loser');
         alert('Game Over');
+        window.location = '/';
         return clearInterval(intervalId);
       }
     };
