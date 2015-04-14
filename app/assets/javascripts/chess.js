@@ -2327,12 +2327,10 @@ $(function(){
               }
             });
             tempArray.length = 0;
+
+            /// code here for checking white's moves. If no moves, declare checkmate ///
           }
         })
-          // Psuedocode //
-          // Then, if attackPiece is knight, king, or pawn, allow other moves that capture attackPiece (same box) //
-          // If attackPiece is bishop, queen, or rook, test boxes in between king and attackPiece, and allow only those pieces or capture moves //
-          // in Droppable, test for array of droppables of check-side, if none, declare game over / checkmate //
 
         }
         else if (piece.match(/white/)) {
@@ -2592,6 +2590,8 @@ $(function(){
               }
             });
             tempArray.length = 0;
+
+            // here check for black's moves. If none, declare checkmate /// 
           }
         });
       }
@@ -2638,6 +2638,7 @@ $(function(){
       }
       if (remainingTime[turn] <= 0) {
         $("#time" + turn).removeClass('turn').addClass('loser');
+        alert('Game Over');
         return clearInterval(intervalId);
       }
     };

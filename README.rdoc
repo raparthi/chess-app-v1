@@ -1,19 +1,21 @@
 == Chess App
 
-This is a simple chess application using bootstrap glyphicons.
+This is a simple chess application using bootstrap glyphicons and JavaScript/JQuery.
 
-Things to improve:
+= Things to Improve / Change
 
-*Set up droppable class to click elements to place
+- Currently, the pieces move according to legal moves. However, there are some illegal moves that haven't been removed. These are -
+  - Castling when one of the interim spaces is threatened by check
+  - Moving one's own piece to reveal check on oneself
 
-*Set up allowable moves for each type of piece
+- Also, some legal moves are not yet enabled, such as 'am passant' (taking a pawn that moves two spaces even if it's past you)
 
-*Use JavaScript to move class names of glyphicons
+- Finally, there are some issues with check and checkmate. Some moves are being allowed that are not, and vice-versa. Also, there is not code to support stalemate yet.
 
-*Collect position data in database
+- Stylistically and practically, there are improvements that could be made. These include - adding real-time events (through Pusher, etc.) to allow simultaneous two-player games
 
-*Use Pusher API to push changes for 2 players simultaneously
+- Also, linking the moves to a database (sqlite, postgres) and saving them for future reference
 
-*Add stylized timer that changes with player moves
+- And being able to link each move to a setup on the board (with the position of all pieces)
 
-*Add interface for users to choose opponents / timing of play
+- Along with the stylistic additions, live chat between the two players would also be good
